@@ -8,6 +8,7 @@ from qiskit.quantum_info import Operator, Statevector
 from forward_qft import build_forward_qft, build_recursive_forward_qft, qft_on_amplitudes
 
 
+# Verify that both QFT constructions match the expected transform.
 def main() -> None:
     for num_qubits in range(1, 6):
         reference = QuantumCircuit(num_qubits)
@@ -36,7 +37,7 @@ def main() -> None:
         assert np.allclose(actual, expected)
         assert np.allclose(recursive_actual, expected)
 
-    print("All forward-QFT checks passed.")
+    print("All standard QFT method and recursive QFT checks passed.")
 
 
 if __name__ == "__main__":

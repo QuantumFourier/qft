@@ -12,6 +12,7 @@ from qiskit_ibm_runtime.fake_provider import FakeManilaV2
 from forward_qft import build_forward_qft, build_recursive_forward_qft, qft_on_amplitudes
 
 
+# Build a sample input state from a chosen amplitude vector.
 def build_input_circuit(amplitudes: np.ndarray) -> QuantumCircuit:
     num_qubits = int(np.log2(amplitudes.size))
     circuit = QuantumCircuit(num_qubits)
@@ -19,6 +20,7 @@ def build_input_circuit(amplitudes: np.ndarray) -> QuantumCircuit:
     return circuit
 
 
+# Print a circuit and a few simple metrics.
 def describe_circuit(label: str, circuit: QuantumCircuit) -> None:
     print(f"\n{label}:")
     print(circuit.draw(output="text"))
@@ -26,6 +28,7 @@ def describe_circuit(label: str, circuit: QuantumCircuit) -> None:
     print(f"Operations: {dict(circuit.count_ops())}")
 
 
+# Transpile one circuit and print before-and-after details.
 def transpile_and_report(
     label: str,
     circuit: QuantumCircuit,
@@ -37,6 +40,7 @@ def transpile_and_report(
     return transpiled
 
 
+# Compare the transpilation cost of both QFT constructions.
 def compare_transpilation_costs(
     standard_qft: QuantumCircuit,
     recursive_qft: QuantumCircuit,
@@ -60,8 +64,9 @@ def compare_transpilation_costs(
     )
 
 
+# Run the full demo from the command line.
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build and transpile forward-QFT circuits.")
+    parser = argparse.ArgumentParser(description="Build and transpile standard QFT method and recursive QFT circuits.")
     parser.add_argument("--qubits", type=int, default=3, help="Number of qubits in the QFT circuit.")
     parser.add_argument(
         "--method",
@@ -96,7 +101,7 @@ def main() -> None:
     print(np.array2string(sample_amplitudes, precision=4, suppress_small=True))
     print("\nQFT amplitudes from the DFT formula:")
     print(np.array2string(transformed, precision=4, suppress_small=True))
-    print("\nQFT amplitudes from the standard circuit:")
+    print("\nQFT amplitudes from the standard QFT method:")
     print(np.array2string(standard_output_state.data, precision=4, suppress_small=True))
     print("\nQFT amplitudes from the recursive circuit:")
     print(np.array2string(recursive_output_state.data, precision=4, suppress_small=True))

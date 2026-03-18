@@ -6,6 +6,7 @@ from pathlib import Path
 from qiskit_ibm_runtime.fake_provider import FakeManilaV2
 
 
+# Export the fake backend properties to a JSON file.
 def main() -> None:
     backend = FakeManilaV2()
     properties = backend.properties().to_dict()

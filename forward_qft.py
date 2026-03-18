@@ -6,8 +6,9 @@ import numpy as np
 from qiskit import QuantumCircuit
 
 
+# Direct amplitude-based calculation for the transform.
 def dft_amplitudes(amplitudes: np.ndarray) -> np.ndarray:
-    """Return the discrete Fourier transform used by the forward QFT."""
+    """Return the discrete Fourier transform used by the standard QFT method."""
     values = np.asarray(amplitudes, dtype=complex)
     size = values.size
 
@@ -19,8 +20,9 @@ def dft_amplitudes(amplitudes: np.ndarray) -> np.ndarray:
     return phase_matrix @ values / sqrt(size)
 
 
+# Standard QFT method built from H, controlled-phase, and SWAP gates.
 def build_forward_qft(num_qubits: int, do_swaps: bool = True) -> QuantumCircuit:
-    """Build the standard forward-QFT circuit using H, controlled-phase, and SWAP gates."""
+    """Build the standard QFT method using H, controlled-phase, and SWAP gates."""
     if num_qubits < 1:
         raise ValueError("num_qubits must be at least 1.")
 
@@ -39,8 +41,9 @@ def build_forward_qft(num_qubits: int, do_swaps: bool = True) -> QuantumCircuit:
     return circuit
 
 
+# Recursive QFT construction based on the smaller subcircuit.
 def build_recursive_forward_qft(num_qubits: int) -> QuantumCircuit:
-    """Build the forward QFT using the recursive construction."""
+    """Build the recursive QFT using the recursive construction."""
     if num_qubits < 1:
         raise ValueError("num_qubits must be at least 1.")
 
@@ -49,6 +52,7 @@ def build_recursive_forward_qft(num_qubits: int) -> QuantumCircuit:
     return circuit
 
 
+# Recursive helper that adds the next layer of gates in place.
 def _append_recursive_qft(circuit: QuantumCircuit, qubits: list[int]) -> None:
     if len(qubits) == 1:
         circuit.h(qubits[0])
@@ -69,8 +73,9 @@ def _append_recursive_qft(circuit: QuantumCircuit, qubits: list[int]) -> None:
         circuit.swap(qubits[index], qubits[index + 1])
 
 
+# Apply the transform directly to a state vector.
 def qft_on_amplitudes(amplitudes: np.ndarray) -> np.ndarray:
-    """Apply the forward-QFT amplitude map to a state vector."""
+    """Apply the standard QFT method amplitude map to a state vector."""
     values = np.asarray(amplitudes, dtype=complex)
     size = values.size
 
