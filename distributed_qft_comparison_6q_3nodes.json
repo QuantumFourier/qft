@@ -1,0 +1,62 @@
+{
+  "num_qubits": 6,
+  "num_nodes": 3,
+  "partition_strategy": "contiguous",
+  "reports": [
+    {
+      "method": "Standard QFT method",
+      "node_mapping": {
+        "0": 0,
+        "1": 0,
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 2
+      },
+      "total_depth": 12,
+      "total_gate_count": 24,
+      "local_gate_counts": {
+        "h": 6,
+        "cp": 3,
+        "swap": 1
+      },
+      "nonlocal_gate_counts": {
+        "cp": 12,
+        "swap": 2
+      },
+      "nonlocal_gate_total": 14,
+      "distributed_control_blocks": 12,
+      "shared_entangled_pairs": 16,
+      "classical_bits": 32,
+      "teleportations": 4
+    },
+    {
+      "method": "Recursive QFT",
+      "node_mapping": {
+        "0": 0,
+        "1": 0,
+        "2": 1,
+        "3": 1,
+        "4": 2,
+        "5": 2
+      },
+      "total_depth": 30,
+      "total_gate_count": 36,
+      "local_gate_counts": {
+        "h": 6,
+        "cp": 3,
+        "swap": 9
+      },
+      "nonlocal_gate_counts": {
+        "cp": 12,
+        "swap": 6
+      },
+      "nonlocal_gate_total": 18,
+      "distributed_control_blocks": 12,
+      "shared_entangled_pairs": 24,
+      "classical_bits": 48,
+      "teleportations": 12
+    }
+  ],
+  "recommended_method": "Standard QFT method"
+}
