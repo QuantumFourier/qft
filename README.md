@@ -1,6 +1,6 @@
 # QFT-Implementation-Paper
 
-This folder contains Python code for comparing the standard QFT method, the recursive QFT, and a simple distributed-QFT cost model.
+This folder contains Python code for comparing the standard QFT method, the recursive QFT, and a distributed-QFT cost model.
 
 ## Files
 
@@ -111,10 +111,8 @@ python export_backend_properties.py
 
 ## Notes
 
-- If `qiskit-aer` is missing, install it with:
+- If `qiskit-aer` can be installed with following command:
 
 ```bash
 python -m pip install qiskit-aer
 ```
-
-- If your system has multiple Python environments, make sure you install packages and run the scripts with the same Python interpreter.
