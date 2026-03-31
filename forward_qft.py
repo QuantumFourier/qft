@@ -21,7 +21,7 @@ def dft_amplitudes(amplitudes: np.ndarray) -> np.ndarray:
 
 
 # Standard QFT method built from H, controlled-phase, and SWAP gates.
-def build_forward_qft(num_qubits: int, do_swaps: bool = True) -> QuantumCircuit:
+def build_standard_qft(num_qubits: int, do_swaps: bool = True) -> QuantumCircuit:
     """Build the standard QFT method using H, controlled-phase, and SWAP gates."""
     if num_qubits < 1:
         raise ValueError("num_qubits must be at least 1.")
@@ -42,7 +42,7 @@ def build_forward_qft(num_qubits: int, do_swaps: bool = True) -> QuantumCircuit:
 
 
 # Recursive QFT construction based on the smaller subcircuit.
-def build_recursive_forward_qft(num_qubits: int) -> QuantumCircuit:
+def build_recursive_qft(num_qubits: int) -> QuantumCircuit:
     """Build the recursive QFT using the recursive construction."""
     if num_qubits < 1:
         raise ValueError("num_qubits must be at least 1.")

@@ -8,9 +8,9 @@ from time import perf_counter
 
 from qiskit import QuantumCircuit
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-from qiskit_ibm_runtime.fake_provider import FakeManilaV2
 
-from forward_qft import build_forward_qft, build_recursive_forward_qft
+from forward_qft import build_recursive_qft, build_standard_qft
+from qft_sampler_utils import select_fake_backend
 
 
 # Build one QFT circuit and record how long construction takes.
@@ -131,7 +131,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    backend = FakeManilaV2()
+    backend = select_fake_backend(args.qubits)
     pass_manager = generate_preset_pass_manager(
         optimization_level=args.optimization_level,
         backend=backend,
@@ -140,14 +140,14 @@ def main() -> None:
     metrics = [
         collect_method_metrics(
             "Standard QFT method",
-            build_forward_qft,
+            build_standard_qft,
             args.qubits,
             backend,
             pass_manager,
         ),
         collect_method_metrics(
             "Recursive QFT",
-            build_recursive_forward_qft,
+            build_recursive_qft,
             args.qubits,
             backend,
             pass_manager,

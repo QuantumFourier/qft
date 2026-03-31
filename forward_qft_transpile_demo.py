@@ -7,9 +7,17 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import QFTGate
 from qiskit.quantum_info import Operator, Statevector
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-from qiskit_ibm_runtime.fake_provider import FakeManilaV2
 
-from forward_qft import build_forward_qft, build_recursive_forward_qft, qft_on_amplitudes
+from forward_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
+from qft_sampler_utils import (
+    build_measured_qft_circuit,
+    build_sample_amplitudes,
+    sample_aer_counts,
+    sample_noisy_aer_counts,
+    select_fake_backend,
+    top_outcomes,
+    total_variation_distance,
+)
 
 
 # Build a sample input state from a chosen amplitude vector.
@@ -26,6 +34,13 @@ def describe_circuit(label: str, circuit: QuantumCircuit) -> None:
     print(circuit.draw(output="text"))
     print(f"Depth: {circuit.depth()}")
     print(f"Operations: {dict(circuit.count_ops())}")
+
+
+# Print a short counts summary with the most likely results.
+def describe_counts(label: str, counts: dict[str, int]) -> None:
+    print(f"\n{label}:")
+    for bitstring, count in top_outcomes(counts):
+        print(f"  {bitstring}: {count}")
 
 
 # Transpile one circuit and print before-and-after details.
@@ -64,10 +79,44 @@ def compare_transpilation_costs(
     )
 
 
+# Run both QFT methods on Aer and compare the measured output distributions.
+def run_aer_comparisons(
+    amplitudes: np.ndarray,
+    standard_qft: QuantumCircuit,
+    recursive_qft: QuantumCircuit,
+    backend,
+    shots: int,
+) -> None:
+    standard_measured = build_measured_qft_circuit(amplitudes, standard_qft)
+    recursive_measured = build_measured_qft_circuit(amplitudes, recursive_qft)
+
+    try:
+        standard_aer_counts = sample_aer_counts(standard_measured, shots=shots)
+        recursive_aer_counts = sample_aer_counts(recursive_measured, shots=shots)
+        standard_noisy_aer_counts = sample_noisy_aer_counts(standard_measured, backend=backend, shots=shots)
+        recursive_noisy_aer_counts = sample_noisy_aer_counts(recursive_measured, backend=backend, shots=shots)
+
+        describe_counts("Ideal Aer counts for the standard QFT method", standard_aer_counts)
+        describe_counts("Ideal Aer counts for the recursive QFT", recursive_aer_counts)
+        describe_counts("Noisy Aer counts for the standard QFT method", standard_noisy_aer_counts)
+        describe_counts("Noisy Aer counts for the recursive QFT", recursive_noisy_aer_counts)
+
+        print(
+            "\nAer comparison:"
+            f"\n  Ideal Aer TVD between methods: {total_variation_distance(standard_aer_counts, recursive_aer_counts):.4f}"
+            f"\n  Standard method ideal vs noisy Aer TVD: {total_variation_distance(standard_aer_counts, standard_noisy_aer_counts):.4f}"
+            f"\n  Recursive QFT ideal vs noisy Aer TVD: {total_variation_distance(recursive_aer_counts, recursive_noisy_aer_counts):.4f}"
+            f"\n  Noisy Aer TVD between methods: {total_variation_distance(standard_noisy_aer_counts, recursive_noisy_aer_counts):.4f}"
+        )
+    except RuntimeError as exc:
+        print(f"\nAer simulator unavailable: {exc}")
+
+
 # Run the full demo from the command line.
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build and transpile standard QFT method and recursive QFT circuits.")
     parser.add_argument("--qubits", type=int, default=3, help="Number of qubits in the QFT circuit.")
+    parser.add_argument("--shots", type=int, default=2048, help="Number of Aer shots to use.")
     parser.add_argument(
         "--method",
         choices=("standard", "recursive", "both"),
@@ -77,11 +126,10 @@ def main() -> None:
     args = parser.parse_args()
 
     num_qubits = args.qubits
-    sample_amplitudes = np.arange(1, 2**num_qubits + 1, dtype=float)
-    sample_amplitudes = sample_amplitudes / np.linalg.norm(sample_amplitudes)
+    sample_amplitudes = build_sample_amplitudes(num_qubits)
 
-    standard_qft = build_forward_qft(num_qubits)
-    recursive_qft = build_recursive_forward_qft(num_qubits)
+    standard_qft = build_standard_qft(num_qubits)
+    recursive_qft = build_recursive_qft(num_qubits)
 
     reference = QuantumCircuit(num_qubits)
     reference.append(QFTGate(num_qubits), range(num_qubits))
@@ -106,8 +154,16 @@ def main() -> None:
     print("\nQFT amplitudes from the recursive circuit:")
     print(np.array2string(recursive_output_state.data, precision=4, suppress_small=True))
 
-    backend = FakeManilaV2()
+    backend = select_fake_backend(num_qubits)
     pass_manager = generate_preset_pass_manager(optimization_level=2, backend=backend)
+    print(f"\nUsing fake backend: {backend.name}")
+    run_aer_comparisons(
+        sample_amplitudes,
+        standard_qft,
+        recursive_qft,
+        backend,
+        shots=args.shots,
+    )
 
     if args.method == "standard":
         transpile_and_report("Standard QFT", standard_qft, pass_manager)

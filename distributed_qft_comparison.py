@@ -6,7 +6,16 @@ from pathlib import Path
 
 from qiskit import QuantumCircuit
 
-from forward_qft import build_forward_qft, build_recursive_forward_qft
+from forward_qft import build_recursive_qft, build_standard_qft
+from qft_sampler_utils import (
+    build_measured_qft_circuit,
+    build_sample_amplitudes,
+    counts_summary,
+    sample_aer_counts,
+    sample_noisy_aer_counts,
+    select_fake_backend,
+    total_variation_distance,
+)
 
 
 # Split qubits across nodes using a simple placement rule.
@@ -183,13 +192,30 @@ def collect_method_report(
     builder,
     num_qubits: int,
     node_mapping: dict[int, int],
+    amplitudes,
+    backend,
+    shots: int,
 ) -> dict:
     circuit = builder(num_qubits)
     costs = analyze_distributed_costs(circuit, node_mapping)
+    measured_circuit = build_measured_qft_circuit(amplitudes, circuit)
+    aer_report = {"available": False}
+
+    try:
+        ideal_aer_counts = sample_aer_counts(measured_circuit, shots=shots)
+        noisy_aer_counts = sample_noisy_aer_counts(measured_circuit, backend=backend, shots=shots)
+        aer_report = {
+            "available": True,
+            "ideal": counts_summary(ideal_aer_counts),
+            "noisy": counts_summary(noisy_aer_counts),
+        }
+    except RuntimeError as exc:
+        aer_report["message"] = str(exc)
 
     return {
         "method": label,
         "node_mapping": node_mapping,
+        "aer": aer_report,
         **costs,
     }
 
@@ -243,6 +269,23 @@ def print_nonlocal_execution_logs(reports: list[dict]) -> None:
             )
 
 
+# Print the Aer summaries when Aer is available.
+def print_aer_summaries(reports: list[dict]) -> None:
+    for item in reports:
+        print(f"\nAer summary for {item['method']}:")
+        if not item["aer"]["available"]:
+            print(f"  {item['aer']['message']}")
+            continue
+
+        print("  Ideal Aer top outcomes:")
+        for bitstring, count in item["aer"]["ideal"]["top_outcomes"]:
+            print(f"  {bitstring}: {count}")
+
+        print("  Noisy Aer top outcomes:")
+        for bitstring, count in item["aer"]["noisy"]["top_outcomes"]:
+            print(f"  {bitstring}: {count}")
+
+
 # Generate the distributed comparison report.
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -266,21 +309,54 @@ def main() -> None:
         action="store_true",
         help="Print the full gate-by-gate execution log, including local gates.",
     )
+    parser.add_argument("--shots", type=int, default=2048, help="Number of Aer shots to use.")
     args = parser.parse_args()
 
     node_mapping = build_node_mapping(args.qubits, args.nodes, args.strategy)
+    amplitudes = build_sample_amplitudes(args.qubits)
+    backend = select_fake_backend(args.qubits)
     reports = [
-        collect_method_report("Standard QFT method", build_forward_qft, args.qubits, node_mapping),
-        collect_method_report("Recursive QFT", build_recursive_forward_qft, args.qubits, node_mapping),
+        collect_method_report(
+            "Standard QFT method",
+            build_standard_qft,
+            args.qubits,
+            node_mapping,
+            amplitudes,
+            backend,
+            shots=args.shots,
+        ),
+        collect_method_report(
+            "Recursive QFT",
+            build_recursive_qft,
+            args.qubits,
+            node_mapping,
+            amplitudes,
+            backend,
+            shots=args.shots,
+        ),
     ]
     best_method = choose_best_method(reports)
+    ideal_aer_distance = None
+    noisy_aer_distance = None
+    if reports[0]["aer"]["available"] and reports[1]["aer"]["available"]:
+        ideal_aer_distance = total_variation_distance(
+            reports[0]["aer"]["ideal"]["counts"],
+            reports[1]["aer"]["ideal"]["counts"],
+        )
+        noisy_aer_distance = total_variation_distance(
+            reports[0]["aer"]["noisy"]["counts"],
+            reports[1]["aer"]["noisy"]["counts"],
+        )
 
     report = {
         "num_qubits": args.qubits,
         "num_nodes": args.nodes,
         "partition_strategy": args.strategy,
+        "backend_name": backend.name,
         "reports": reports,
         "recommended_method": best_method["method"],
+        "ideal_aer_tvd_between_methods": ideal_aer_distance,
+        "noisy_aer_tvd_between_methods": noisy_aer_distance,
     }
 
     output_path = Path(args.output)
@@ -289,8 +365,13 @@ def main() -> None:
 
     output_path.write_text(json.dumps(report, indent=2))
 
-    print(f"Node mapping: {node_mapping}\n")
+    print(f"Node mapping: {node_mapping}")
+    print(f"Using fake backend: {backend.name}\n")
     print_summary(reports)
+    print_aer_summaries(reports)
+    if ideal_aer_distance is not None:
+        print(f"\nIdeal Aer TVD between methods: {ideal_aer_distance:.4f}")
+        print(f"Noisy Aer TVD between methods: {noisy_aer_distance:.4f}")
     print_nonlocal_execution_logs(reports)
 
     if args.show_full_log:

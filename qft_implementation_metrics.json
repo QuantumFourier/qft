@@ -1,56 +1,56 @@
 {
   "backend_name": "fake_manila",
-  "num_qubits": 3,
+  "num_qubits": 4,
   "optimization_level": 3,
   "metrics": [
     {
       "method": "Standard QFT method",
-      "build_time_seconds": 7.974996697157621e-05,
-      "transpile_time_seconds": 0.007860250014346093,
-      "original_depth": 6,
-      "original_gate_count": 7,
+      "build_time_seconds": 8.929101750254631e-05,
+      "transpile_time_seconds": 0.011574249947443604,
+      "original_depth": 8,
+      "original_gate_count": 12,
       "original_gate_breakdown": {
-        "h": 3,
-        "cp": 3,
-        "swap": 1
+        "cp": 6,
+        "h": 4,
+        "swap": 2
       },
-      "transpiled_depth": 17,
-      "transpiled_gate_count": 22,
+      "transpiled_depth": 33,
+      "transpiled_gate_count": 56,
       "transpiled_gate_breakdown": {
-        "rz": 12,
-        "cx": 7,
-        "sx": 3
+        "rz": 29,
+        "cx": 15,
+        "sx": 12
       },
-      "estimated_duration_seconds": 2.581333333333333e-06,
-      "estimated_total_error": 0.057625780937904617,
-      "estimated_cnot_error": 0.0568474703920786,
-      "estimated_success_probability": 0.9437576413268969,
-      "transpiled_cnot_count": 7,
+      "estimated_duration_seconds": 5.973333333333333e-06,
+      "estimated_total_error": 0.14948614016992093,
+      "estimated_cnot_error": 0.14412354727329002,
+      "estimated_success_probability": 0.8604762268728592,
+      "transpiled_cnot_count": 15,
       "operations_missing_backend_properties": 0
     },
     {
       "method": "Recursive QFT",
-      "build_time_seconds": 5.079101538285613e-05,
-      "transpile_time_seconds": 0.001307416008785367,
-      "original_depth": 9,
-      "original_gate_count": 9,
+      "build_time_seconds": 8.437503129243851e-05,
+      "transpile_time_seconds": 0.0021295840851962566,
+      "original_depth": 15,
+      "original_gate_count": 16,
       "original_gate_breakdown": {
-        "h": 3,
-        "cp": 3,
-        "swap": 3
+        "cp": 6,
+        "swap": 6,
+        "h": 4
       },
-      "transpiled_depth": 22,
-      "transpiled_gate_count": 23,
+      "transpiled_depth": 35,
+      "transpiled_gate_count": 55,
       "transpiled_gate_breakdown": {
-        "rz": 11,
-        "cx": 9,
-        "sx": 3
+        "rz": 26,
+        "cx": 17,
+        "sx": 12
       },
-      "estimated_duration_seconds": 3.093333333333334e-06,
-      "estimated_total_error": 0.0750681229195939,
-      "estimated_cnot_error": 0.0738978686998967,
-      "estimated_success_probability": 0.9273634907641556,
-      "transpiled_cnot_count": 9,
+      "estimated_duration_seconds": 6.613333333333333e-06,
+      "estimated_total_error": 0.1721943858483085,
+      "estimated_cnot_error": 0.1668317929516776,
+      "estimated_success_probability": 0.841047250556617,
+      "transpiled_cnot_count": 17,
       "operations_missing_backend_properties": 0
     }
   ]

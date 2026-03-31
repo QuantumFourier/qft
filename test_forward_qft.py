@@ -5,7 +5,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import QFTGate
 from qiskit.quantum_info import Operator, Statevector
 
-from forward_qft import build_forward_qft, build_recursive_forward_qft, qft_on_amplitudes
+from forward_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
 
 
 # Verify that both QFT constructions match the expected transform.
@@ -14,8 +14,8 @@ def main() -> None:
         reference = QuantumCircuit(num_qubits)
         reference.append(QFTGate(num_qubits), range(num_qubits))
 
-        standard_qft = build_forward_qft(num_qubits)
-        recursive_qft = build_recursive_forward_qft(num_qubits)
+        standard_qft = build_standard_qft(num_qubits)
+        recursive_qft = build_recursive_qft(num_qubits)
 
         assert Operator(standard_qft).equiv(Operator(reference))
         assert Operator(recursive_qft).equiv(Operator(reference))
