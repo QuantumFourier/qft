@@ -111,7 +111,7 @@ python export_backend_properties.py
 
 ## Notes
 
-- If `qiskit-aer` can be installed with following command:
+- If `qiskit-aer` is missing, it can be installed using the following command:
 
 ```bash
 python -m pip install qiskit-aer
