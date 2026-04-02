@@ -1,11 +1,19 @@
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+
+CURRENT_DIR = Path(__file__).resolve().parent
+PARENT_DIR = CURRENT_DIR.parent
+for candidate in (PARENT_DIR, CURRENT_DIR):
+    if str(candidate) not in sys.path:
+        sys.path.insert(0, str(candidate))
 
 from multidimensional_qft import (
     build_multidimensional_qft,

@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import QFTGate
 from qiskit.quantum_info import Operator, Statevector
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+
+PARENT_DIR = Path(__file__).resolve().parent.parent
+if str(PARENT_DIR) not in sys.path:
+    sys.path.insert(0, str(PARENT_DIR))
 
 from forward_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
 from qft_sampler_utils import (

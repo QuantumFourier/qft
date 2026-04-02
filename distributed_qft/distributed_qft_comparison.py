@@ -2,10 +2,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from qiskit import QuantumCircuit
 from qiskit_ibm_runtime.fake_provider import FakeFez
+
+CURRENT_DIR = Path(__file__).resolve().parent
+PARENT_DIR = CURRENT_DIR.parent
+STANDARD_DIR = PARENT_DIR / "standard_recursive_qft"
+for candidate in (PARENT_DIR, STANDARD_DIR):
+    if str(candidate) not in sys.path:
+        sys.path.insert(0, str(candidate))
 
 from forward_qft import build_recursive_qft, build_standard_qft
 from qft_sampler_utils import (
