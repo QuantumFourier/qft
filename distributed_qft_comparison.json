@@ -1,209 +1,201 @@
 {
   "num_qubits": 6,
   "num_nodes": 3,
-  "partition_strategy": "interleaved",
-  "backend_name": "fake_kolkata",
+  "partition_strategy": "contiguous",
+  "backend_name": "fake_fez",
+  "chip_layout": {
+    "backend_name": "fake_fez",
+    "total_physical_qubits": 156,
+    "nodes": [
+      {
+        "node": 0,
+        "physical_qubit_range": [
+          0,
+          49
+        ],
+        "capacity": 50
+      },
+      {
+        "node": 1,
+        "physical_qubit_range": [
+          50,
+          99
+        ],
+        "capacity": 50
+      },
+      {
+        "node": 2,
+        "physical_qubit_range": [
+          100,
+          149
+        ],
+        "capacity": 50
+      }
+    ],
+    "unused_physical_qubit_range": [
+      150,
+      155
+    ]
+  },
   "reports": [
     {
       "method": "Standard QFT method",
       "node_mapping": {
         "0": 0,
-        "1": 1,
-        "2": 2,
-        "3": 0,
-        "4": 1,
+        "1": 0,
+        "2": 1,
+        "3": 1,
+        "4": 2,
         "5": 2
+      },
+      "physical_qubit_mapping": {
+        "0": 0,
+        "1": 1,
+        "2": 50,
+        "3": 51,
+        "4": 100,
+        "5": 101
       },
       "aer": {
         "available": true,
         "ideal": {
-          "shots": 128,
+          "shots": 64,
           "counts": {
-            "001110": 1,
-            "000000": 91,
-            "101100": 1,
-            "111001": 1,
-            "000011": 2,
-            "000001": 7,
-            "000100": 1,
-            "000010": 3,
-            "111101": 3,
-            "111111": 11,
-            "111011": 3,
-            "111110": 4
+            "001100": 1,
+            "000011": 1,
+            "110111": 1,
+            "111111": 5,
+            "010001": 1,
+            "111100": 1,
+            "000001": 5,
+            "000000": 49
           },
           "top_outcomes": [
             [
               "000000",
-              91
-            ],
-            [
-              "111111",
-              11
+              49
             ],
             [
               "000001",
-              7
+              5
             ],
             [
-              "111110",
-              4
-            ],
-            [
-              "000010",
-              3
-            ],
-            [
-              "111011",
-              3
-            ],
-            [
-              "111101",
-              3
+              "111111",
+              5
             ],
             [
               "000011",
-              2
+              1
+            ],
+            [
+              "001100",
+              1
+            ],
+            [
+              "010001",
+              1
+            ],
+            [
+              "110111",
+              1
+            ],
+            [
+              "111100",
+              1
             ]
           ],
           "probabilities": {
-            "001110": 0.0078125,
-            "000000": 0.7109375,
-            "101100": 0.0078125,
-            "111001": 0.0078125,
+            "001100": 0.015625,
             "000011": 0.015625,
-            "000001": 0.0546875,
-            "000100": 0.0078125,
-            "000010": 0.0234375,
-            "111101": 0.0234375,
-            "111111": 0.0859375,
-            "111011": 0.0234375,
-            "111110": 0.03125
+            "110111": 0.015625,
+            "111111": 0.078125,
+            "010001": 0.015625,
+            "111100": 0.015625,
+            "000001": 0.078125,
+            "000000": 0.765625
           }
         },
         "noisy": {
-          "shots": 128,
+          "shots": 64,
           "counts": {
-            "111101": 1,
-            "000100": 2,
-            "011111": 1,
-            "111001": 1,
-            "010010": 1,
-            "000111": 1,
-            "010100": 2,
-            "010011": 2,
-            "001110": 1,
-            "110111": 1,
-            "001010": 1,
-            "101000": 3,
-            "101001": 2,
-            "000011": 2,
-            "001100": 1,
-            "001001": 1,
-            "110000": 6,
-            "011011": 3,
-            "111110": 6,
-            "111100": 2,
-            "111111": 7,
-            "010000": 4,
-            "100001": 3,
-            "000110": 1,
-            "001000": 1,
-            "010001": 2,
+            "101010": 1,
+            "111000": 1,
             "001011": 1,
-            "000010": 8,
-            "111000": 5,
+            "100011": 1,
+            "110111": 2,
+            "110000": 2,
+            "111111": 3,
+            "000100": 1,
+            "001100": 1,
+            "011110": 1,
+            "100000": 4,
+            "000001": 5,
+            "100010": 1,
+            "001000": 3,
+            "000000": 25,
+            "101111": 1,
+            "111100": 2,
+            "000010": 1,
+            "111101": 1,
             "011000": 2,
-            "111011": 3,
-            "110100": 1,
-            "101110": 2,
-            "011010": 2,
-            "000001": 9,
-            "100110": 1,
-            "100000": 2,
-            "011110": 2,
-            "000000": 26,
-            "100011": 2,
-            "111010": 2,
-            "010111": 2
+            "010000": 5
           },
           "top_outcomes": [
             [
               "000000",
-              26
+              25
             ],
             [
               "000001",
-              9
-            ],
-            [
-              "000010",
-              8
-            ],
-            [
-              "111111",
-              7
-            ],
-            [
-              "110000",
-              6
-            ],
-            [
-              "111110",
-              6
-            ],
-            [
-              "111000",
               5
             ],
             [
               "010000",
+              5
+            ],
+            [
+              "100000",
               4
+            ],
+            [
+              "001000",
+              3
+            ],
+            [
+              "111111",
+              3
+            ],
+            [
+              "011000",
+              2
+            ],
+            [
+              "110000",
+              2
             ]
           ],
           "probabilities": {
-            "111101": 0.0078125,
-            "000100": 0.015625,
-            "011111": 0.0078125,
-            "111001": 0.0078125,
-            "010010": 0.0078125,
-            "000111": 0.0078125,
-            "010100": 0.015625,
-            "010011": 0.015625,
-            "001110": 0.0078125,
-            "110111": 0.0078125,
-            "001010": 0.0078125,
-            "101000": 0.0234375,
-            "101001": 0.015625,
-            "000011": 0.015625,
-            "001100": 0.0078125,
-            "001001": 0.0078125,
-            "110000": 0.046875,
-            "011011": 0.0234375,
-            "111110": 0.046875,
-            "111100": 0.015625,
-            "111111": 0.0546875,
-            "010000": 0.03125,
-            "100001": 0.0234375,
-            "000110": 0.0078125,
-            "001000": 0.0078125,
-            "010001": 0.015625,
-            "001011": 0.0078125,
-            "000010": 0.0625,
-            "111000": 0.0390625,
-            "011000": 0.015625,
-            "111011": 0.0234375,
-            "110100": 0.0078125,
-            "101110": 0.015625,
-            "011010": 0.015625,
-            "000001": 0.0703125,
-            "100110": 0.0078125,
-            "100000": 0.015625,
-            "011110": 0.015625,
-            "000000": 0.203125,
+            "101010": 0.015625,
+            "111000": 0.015625,
+            "001011": 0.015625,
             "100011": 0.015625,
-            "111010": 0.015625,
-            "010111": 0.015625
+            "110111": 0.03125,
+            "110000": 0.03125,
+            "111111": 0.046875,
+            "000100": 0.015625,
+            "001100": 0.015625,
+            "011110": 0.015625,
+            "100000": 0.0625,
+            "000001": 0.078125,
+            "100010": 0.015625,
+            "001000": 0.046875,
+            "000000": 0.390625,
+            "101111": 0.015625,
+            "111100": 0.03125,
+            "000010": 0.015625,
+            "111101": 0.015625,
+            "011000": 0.03125,
+            "010000": 0.078125
           }
         }
       },
@@ -247,13 +239,13 @@
             5
           ],
           "nodes": [
-            1,
+            2,
             2
           ],
-          "locality": "non-local",
-          "action": "Create a distributed control block from node 1 to node 2, then apply cp on the target node.",
-          "new_shared_entangled_pairs": 1,
-          "new_classical_bits": 2,
+          "locality": "local",
+          "action": "Apply cp locally on node 2.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
           "new_teleportations": 0
         },
         {
@@ -264,11 +256,11 @@
             5
           ],
           "nodes": [
-            0,
+            1,
             2
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 0 to node 2, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 1 to node 2, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -281,13 +273,13 @@
             5
           ],
           "nodes": [
-            2,
+            1,
             2
           ],
-          "locality": "local",
-          "action": "Apply cp locally on node 2.",
-          "new_shared_entangled_pairs": 0,
-          "new_classical_bits": 0,
+          "locality": "non-local",
+          "action": "Create a distributed control block from node 1 to node 2, then apply cp on the target node.",
+          "new_shared_entangled_pairs": 1,
+          "new_classical_bits": 2,
           "new_teleportations": 0
         },
         {
@@ -298,11 +290,11 @@
             5
           ],
           "nodes": [
-            1,
+            0,
             2
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 1 to node 2, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 0 to node 2, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -331,10 +323,10 @@
             4
           ],
           "nodes": [
-            1
+            2
           ],
           "locality": "local",
-          "action": "Apply h locally on node 1.",
+          "action": "Apply h locally on node 2.",
           "new_shared_entangled_pairs": 0,
           "new_classical_bits": 0,
           "new_teleportations": 0
@@ -347,11 +339,11 @@
             4
           ],
           "nodes": [
-            0,
-            1
+            1,
+            2
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 0 to node 1, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 1 to node 2, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -364,11 +356,11 @@
             4
           ],
           "nodes": [
-            2,
-            1
+            1,
+            2
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 2 to node 1, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 1 to node 2, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -381,13 +373,13 @@
             4
           ],
           "nodes": [
-            1,
-            1
+            0,
+            2
           ],
-          "locality": "local",
-          "action": "Apply cp locally on node 1.",
-          "new_shared_entangled_pairs": 0,
-          "new_classical_bits": 0,
+          "locality": "non-local",
+          "action": "Create a distributed control block from node 0 to node 2, then apply cp on the target node.",
+          "new_shared_entangled_pairs": 1,
+          "new_classical_bits": 2,
           "new_teleportations": 0
         },
         {
@@ -399,10 +391,10 @@
           ],
           "nodes": [
             0,
-            1
+            2
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 0 to node 1, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 0 to node 2, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -414,10 +406,10 @@
             3
           ],
           "nodes": [
-            0
+            1
           ],
           "locality": "local",
-          "action": "Apply h locally on node 0.",
+          "action": "Apply h locally on node 1.",
           "new_shared_entangled_pairs": 0,
           "new_classical_bits": 0,
           "new_teleportations": 0
@@ -430,13 +422,13 @@
             3
           ],
           "nodes": [
-            2,
-            0
+            1,
+            1
           ],
-          "locality": "non-local",
-          "action": "Create a distributed control block from node 2 to node 0, then apply cp on the target node.",
-          "new_shared_entangled_pairs": 1,
-          "new_classical_bits": 2,
+          "locality": "local",
+          "action": "Apply cp locally on node 1.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
           "new_teleportations": 0
         },
         {
@@ -447,11 +439,11 @@
             3
           ],
           "nodes": [
-            1,
-            0
+            0,
+            1
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 1 to node 0, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 0 to node 1, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -465,12 +457,12 @@
           ],
           "nodes": [
             0,
-            0
+            1
           ],
-          "locality": "local",
-          "action": "Apply cp locally on node 0.",
-          "new_shared_entangled_pairs": 0,
-          "new_classical_bits": 0,
+          "locality": "non-local",
+          "action": "Create a distributed control block from node 0 to node 1, then apply cp on the target node.",
+          "new_shared_entangled_pairs": 1,
+          "new_classical_bits": 2,
           "new_teleportations": 0
         },
         {
@@ -480,10 +472,10 @@
             2
           ],
           "nodes": [
-            2
+            1
           ],
           "locality": "local",
-          "action": "Apply h locally on node 2.",
+          "action": "Apply h locally on node 1.",
           "new_shared_entangled_pairs": 0,
           "new_classical_bits": 0,
           "new_teleportations": 0
@@ -496,11 +488,11 @@
             2
           ],
           "nodes": [
-            1,
-            2
+            0,
+            1
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 1 to node 2, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 0 to node 1, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -514,10 +506,10 @@
           ],
           "nodes": [
             0,
-            2
+            1
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 0 to node 2, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 0 to node 1, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -529,10 +521,10 @@
             1
           ],
           "nodes": [
-            1
+            0
           ],
           "locality": "local",
-          "action": "Apply h locally on node 1.",
+          "action": "Apply h locally on node 0.",
           "new_shared_entangled_pairs": 0,
           "new_classical_bits": 0,
           "new_teleportations": 0
@@ -546,12 +538,12 @@
           ],
           "nodes": [
             0,
-            1
+            0
           ],
-          "locality": "non-local",
-          "action": "Create a distributed control block from node 0 to node 1, then apply cp on the target node.",
-          "new_shared_entangled_pairs": 1,
-          "new_classical_bits": 2,
+          "locality": "local",
+          "action": "Apply cp locally on node 0.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
           "new_teleportations": 0
         },
         {
@@ -594,14 +586,14 @@
             4
           ],
           "nodes": [
-            1,
-            1
+            0,
+            2
           ],
-          "locality": "local",
-          "action": "Apply swap locally on node 1.",
-          "new_shared_entangled_pairs": 0,
-          "new_classical_bits": 0,
-          "new_teleportations": 0
+          "locality": "non-local",
+          "action": "Implement swap between node 0 and node 2 using teleportation.",
+          "new_shared_entangled_pairs": 2,
+          "new_classical_bits": 4,
+          "new_teleportations": 2
         },
         {
           "step": 24,
@@ -611,14 +603,14 @@
             3
           ],
           "nodes": [
-            2,
-            0
+            1,
+            1
           ],
-          "locality": "non-local",
-          "action": "Implement swap between node 2 and node 0 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
+          "locality": "local",
+          "action": "Apply swap locally on node 1.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
         }
       ]
     },
@@ -626,222 +618,146 @@
       "method": "Recursive QFT",
       "node_mapping": {
         "0": 0,
-        "1": 1,
-        "2": 2,
-        "3": 0,
-        "4": 1,
+        "1": 0,
+        "2": 1,
+        "3": 1,
+        "4": 2,
         "5": 2
+      },
+      "physical_qubit_mapping": {
+        "0": 0,
+        "1": 1,
+        "2": 50,
+        "3": 51,
+        "4": 100,
+        "5": 101
       },
       "aer": {
         "available": true,
         "ideal": {
-          "shots": 128,
+          "shots": 64,
           "counts": {
-            "000110": 1,
-            "000101": 1,
             "111110": 1,
-            "001000": 1,
-            "101101": 1,
-            "011000": 1,
-            "111011": 1,
-            "111100": 1,
-            "111111": 12,
-            "000010": 2,
+            "000001": 5,
             "111101": 1,
-            "000001": 8,
-            "000000": 97
+            "000000": 50,
+            "111111": 7
           },
           "top_outcomes": [
             [
               "000000",
-              97
+              50
             ],
             [
               "111111",
-              12
-            ],
-            [
-              "000001",
-              8
-            ],
-            [
-              "000010",
-              2
-            ],
-            [
-              "000101",
-              1
-            ],
-            [
-              "000110",
-              1
-            ],
-            [
-              "001000",
-              1
-            ],
-            [
-              "011000",
-              1
-            ]
-          ],
-          "probabilities": {
-            "000110": 0.0078125,
-            "000101": 0.0078125,
-            "111110": 0.0078125,
-            "001000": 0.0078125,
-            "101101": 0.0078125,
-            "011000": 0.0078125,
-            "111011": 0.0078125,
-            "111100": 0.0078125,
-            "111111": 0.09375,
-            "000010": 0.015625,
-            "111101": 0.0078125,
-            "000001": 0.0625,
-            "000000": 0.7578125
-          }
-        },
-        "noisy": {
-          "shots": 128,
-          "counts": {
-            "001110": 2,
-            "010010": 1,
-            "101111": 3,
-            "011100": 2,
-            "010011": 2,
-            "111010": 2,
-            "111100": 1,
-            "001000": 1,
-            "000001": 6,
-            "100101": 1,
-            "010000": 2,
-            "100110": 2,
-            "101010": 1,
-            "110010": 1,
-            "011011": 1,
-            "001001": 1,
-            "001011": 2,
-            "000111": 1,
-            "010101": 2,
-            "000000": 31,
-            "110001": 1,
-            "011101": 2,
-            "000101": 2,
-            "000110": 1,
-            "011000": 1,
-            "111111": 2,
-            "100100": 2,
-            "000010": 6,
-            "111000": 1,
-            "110111": 1,
-            "011001": 2,
-            "100001": 1,
-            "110000": 3,
-            "110011": 1,
-            "101101": 1,
-            "001100": 2,
-            "101000": 1,
-            "100010": 2,
-            "010110": 1,
-            "010001": 2,
-            "100000": 7,
-            "111110": 1,
-            "100011": 1,
-            "101001": 2,
-            "000011": 3,
-            "100111": 3,
-            "101100": 2,
-            "000100": 3,
-            "111101": 1,
-            "110100": 2,
-            "011111": 3
-          },
-          "top_outcomes": [
-            [
-              "000000",
-              31
-            ],
-            [
-              "100000",
               7
             ],
             [
               "000001",
-              6
+              5
             ],
             [
-              "000010",
-              6
+              "111101",
+              1
             ],
             [
-              "000011",
-              3
-            ],
-            [
-              "000100",
-              3
-            ],
-            [
-              "011111",
-              3
-            ],
-            [
-              "100111",
-              3
+              "111110",
+              1
             ]
           ],
           "probabilities": {
-            "001110": 0.015625,
-            "010010": 0.0078125,
-            "101111": 0.0234375,
-            "011100": 0.015625,
-            "010011": 0.015625,
-            "111010": 0.015625,
-            "111100": 0.0078125,
-            "001000": 0.0078125,
-            "000001": 0.046875,
-            "100101": 0.0078125,
-            "010000": 0.015625,
-            "100110": 0.015625,
-            "101010": 0.0078125,
-            "110010": 0.0078125,
-            "011011": 0.0078125,
-            "001001": 0.0078125,
-            "001011": 0.015625,
-            "000111": 0.0078125,
-            "010101": 0.015625,
-            "000000": 0.2421875,
-            "110001": 0.0078125,
-            "011101": 0.015625,
-            "000101": 0.015625,
-            "000110": 0.0078125,
-            "011000": 0.0078125,
-            "111111": 0.015625,
-            "100100": 0.015625,
-            "000010": 0.046875,
-            "111000": 0.0078125,
-            "110111": 0.0078125,
-            "011001": 0.015625,
-            "100001": 0.0078125,
-            "110000": 0.0234375,
-            "110011": 0.0078125,
-            "101101": 0.0078125,
-            "001100": 0.015625,
-            "101000": 0.0078125,
+            "111110": 0.015625,
+            "000001": 0.078125,
+            "111101": 0.015625,
+            "000000": 0.78125,
+            "111111": 0.109375
+          }
+        },
+        "noisy": {
+          "shots": 64,
+          "counts": {
+            "010100": 1,
+            "000111": 1,
+            "010000": 2,
+            "101000": 2,
+            "011000": 1,
+            "111100": 1,
+            "111110": 1,
+            "001000": 3,
+            "100010": 1,
+            "110010": 1,
+            "001010": 2,
+            "011100": 1,
+            "101111": 2,
+            "000000": 27,
+            "111000": 1,
+            "001011": 1,
+            "011010": 2,
+            "011111": 1,
+            "111111": 4,
+            "000100": 1,
+            "110001": 1,
+            "000011": 2,
+            "000001": 5
+          },
+          "top_outcomes": [
+            [
+              "000000",
+              27
+            ],
+            [
+              "000001",
+              5
+            ],
+            [
+              "111111",
+              4
+            ],
+            [
+              "001000",
+              3
+            ],
+            [
+              "000011",
+              2
+            ],
+            [
+              "001010",
+              2
+            ],
+            [
+              "010000",
+              2
+            ],
+            [
+              "011010",
+              2
+            ]
+          ],
+          "probabilities": {
+            "010100": 0.015625,
+            "000111": 0.015625,
+            "010000": 0.03125,
+            "101000": 0.03125,
+            "011000": 0.015625,
+            "111100": 0.015625,
+            "111110": 0.015625,
+            "001000": 0.046875,
             "100010": 0.015625,
-            "010110": 0.0078125,
-            "010001": 0.015625,
-            "100000": 0.0546875,
-            "111110": 0.0078125,
-            "100011": 0.0078125,
-            "101001": 0.015625,
-            "000011": 0.0234375,
-            "100111": 0.0234375,
-            "101100": 0.015625,
-            "000100": 0.0234375,
-            "111101": 0.0078125,
-            "110100": 0.015625,
-            "011111": 0.0234375
+            "110010": 0.015625,
+            "001010": 0.03125,
+            "011100": 0.015625,
+            "101111": 0.03125,
+            "000000": 0.421875,
+            "111000": 0.015625,
+            "001011": 0.015625,
+            "011010": 0.03125,
+            "011111": 0.015625,
+            "111111": 0.0625,
+            "000100": 0.015625,
+            "110001": 0.015625,
+            "000011": 0.03125,
+            "000001": 0.078125
           }
         }
       },
@@ -849,17 +765,18 @@
       "total_gate_count": 36,
       "local_gate_counts": {
         "h": 6,
-        "cp": 3
+        "cp": 3,
+        "swap": 9
       },
       "nonlocal_gate_counts": {
         "cp": 12,
-        "swap": 15
+        "swap": 6
       },
-      "nonlocal_gate_total": 27,
+      "nonlocal_gate_total": 18,
       "distributed_control_blocks": 12,
-      "shared_entangled_pairs": 42,
-      "classical_bits": 84,
-      "teleportations": 30,
+      "shared_entangled_pairs": 24,
+      "classical_bits": 48,
+      "teleportations": 12,
       "execution_log": [
         {
           "step": 1,
@@ -885,12 +802,12 @@
           ],
           "nodes": [
             2,
-            1
+            2
           ],
-          "locality": "non-local",
-          "action": "Create a distributed control block from node 2 to node 1, then apply cp on the target node.",
-          "new_shared_entangled_pairs": 1,
-          "new_classical_bits": 2,
+          "locality": "local",
+          "action": "Apply cp locally on node 2.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
           "new_teleportations": 0
         },
         {
@@ -900,10 +817,10 @@
             4
           ],
           "nodes": [
-            1
+            2
           ],
           "locality": "local",
-          "action": "Apply h locally on node 1.",
+          "action": "Apply h locally on node 2.",
           "new_shared_entangled_pairs": 0,
           "new_classical_bits": 0,
           "new_teleportations": 0
@@ -916,14 +833,14 @@
             5
           ],
           "nodes": [
-            1,
+            2,
             2
           ],
-          "locality": "non-local",
-          "action": "Implement swap between node 1 and node 2 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
+          "locality": "local",
+          "action": "Apply swap locally on node 2.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
         },
         {
           "step": 5,
@@ -933,11 +850,11 @@
             3
           ],
           "nodes": [
-            1,
-            0
+            2,
+            1
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 1 to node 0, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 2 to node 1, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -951,10 +868,10 @@
           ],
           "nodes": [
             2,
-            0
+            1
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 2 to node 0, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 2 to node 1, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -966,10 +883,10 @@
             3
           ],
           "nodes": [
-            0
+            1
           ],
           "locality": "local",
-          "action": "Apply h locally on node 0.",
+          "action": "Apply h locally on node 1.",
           "new_shared_entangled_pairs": 0,
           "new_classical_bits": 0,
           "new_teleportations": 0
@@ -982,11 +899,11 @@
             4
           ],
           "nodes": [
-            0,
-            1
+            1,
+            2
           ],
           "locality": "non-local",
-          "action": "Implement swap between node 0 and node 1 using teleportation.",
+          "action": "Implement swap between node 1 and node 2 using teleportation.",
           "new_shared_entangled_pairs": 2,
           "new_classical_bits": 4,
           "new_teleportations": 2
@@ -999,14 +916,14 @@
             5
           ],
           "nodes": [
-            1,
+            2,
             2
           ],
-          "locality": "non-local",
-          "action": "Implement swap between node 1 and node 2 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
+          "locality": "local",
+          "action": "Apply swap locally on node 2.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
         },
         {
           "step": 10,
@@ -1016,13 +933,13 @@
             2
           ],
           "nodes": [
-            0,
-            2
+            1,
+            1
           ],
-          "locality": "non-local",
-          "action": "Create a distributed control block from node 0 to node 2, then apply cp on the target node.",
-          "new_shared_entangled_pairs": 1,
-          "new_classical_bits": 2,
+          "locality": "local",
+          "action": "Apply cp locally on node 1.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
           "new_teleportations": 0
         },
         {
@@ -1033,11 +950,11 @@
             2
           ],
           "nodes": [
-            1,
-            2
+            2,
+            1
           ],
           "locality": "non-local",
-          "action": "Create a distributed control block from node 1 to node 2, then apply cp on the target node.",
+          "action": "Create a distributed control block from node 2 to node 1, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -1051,12 +968,12 @@
           ],
           "nodes": [
             2,
-            2
+            1
           ],
-          "locality": "local",
-          "action": "Apply cp locally on node 2.",
-          "new_shared_entangled_pairs": 0,
-          "new_classical_bits": 0,
+          "locality": "non-local",
+          "action": "Create a distributed control block from node 2 to node 1, then apply cp on the target node.",
+          "new_shared_entangled_pairs": 1,
+          "new_classical_bits": 2,
           "new_teleportations": 0
         },
         {
@@ -1066,10 +983,10 @@
             2
           ],
           "nodes": [
-            2
+            1
           ],
           "locality": "local",
-          "action": "Apply h locally on node 2.",
+          "action": "Apply h locally on node 1.",
           "new_shared_entangled_pairs": 0,
           "new_classical_bits": 0,
           "new_teleportations": 0
@@ -1082,14 +999,14 @@
             3
           ],
           "nodes": [
-            2,
-            0
+            1,
+            1
           ],
-          "locality": "non-local",
-          "action": "Implement swap between node 2 and node 0 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
+          "locality": "local",
+          "action": "Apply swap locally on node 1.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
         },
         {
           "step": 15,
@@ -1099,11 +1016,11 @@
             4
           ],
           "nodes": [
-            0,
-            1
+            1,
+            2
           ],
           "locality": "non-local",
-          "action": "Implement swap between node 0 and node 1 using teleportation.",
+          "action": "Implement swap between node 1 and node 2 using teleportation.",
           "new_shared_entangled_pairs": 2,
           "new_classical_bits": 4,
           "new_teleportations": 2
@@ -1116,14 +1033,14 @@
             5
           ],
           "nodes": [
-            1,
+            2,
             2
           ],
-          "locality": "non-local",
-          "action": "Implement swap between node 1 and node 2 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
+          "locality": "local",
+          "action": "Apply swap locally on node 2.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
         },
         {
           "step": 17,
@@ -1131,157 +1048,6 @@
           "qubits": [
             2,
             1
-          ],
-          "nodes": [
-            2,
-            1
-          ],
-          "locality": "non-local",
-          "action": "Create a distributed control block from node 2 to node 1, then apply cp on the target node.",
-          "new_shared_entangled_pairs": 1,
-          "new_classical_bits": 2,
-          "new_teleportations": 0
-        },
-        {
-          "step": 18,
-          "gate": "cp",
-          "qubits": [
-            3,
-            1
-          ],
-          "nodes": [
-            0,
-            1
-          ],
-          "locality": "non-local",
-          "action": "Create a distributed control block from node 0 to node 1, then apply cp on the target node.",
-          "new_shared_entangled_pairs": 1,
-          "new_classical_bits": 2,
-          "new_teleportations": 0
-        },
-        {
-          "step": 19,
-          "gate": "cp",
-          "qubits": [
-            4,
-            1
-          ],
-          "nodes": [
-            1,
-            1
-          ],
-          "locality": "local",
-          "action": "Apply cp locally on node 1.",
-          "new_shared_entangled_pairs": 0,
-          "new_classical_bits": 0,
-          "new_teleportations": 0
-        },
-        {
-          "step": 20,
-          "gate": "cp",
-          "qubits": [
-            5,
-            1
-          ],
-          "nodes": [
-            2,
-            1
-          ],
-          "locality": "non-local",
-          "action": "Create a distributed control block from node 2 to node 1, then apply cp on the target node.",
-          "new_shared_entangled_pairs": 1,
-          "new_classical_bits": 2,
-          "new_teleportations": 0
-        },
-        {
-          "step": 21,
-          "gate": "h",
-          "qubits": [
-            1
-          ],
-          "nodes": [
-            1
-          ],
-          "locality": "local",
-          "action": "Apply h locally on node 1.",
-          "new_shared_entangled_pairs": 0,
-          "new_classical_bits": 0,
-          "new_teleportations": 0
-        },
-        {
-          "step": 22,
-          "gate": "swap",
-          "qubits": [
-            1,
-            2
-          ],
-          "nodes": [
-            1,
-            2
-          ],
-          "locality": "non-local",
-          "action": "Implement swap between node 1 and node 2 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
-        },
-        {
-          "step": 23,
-          "gate": "swap",
-          "qubits": [
-            2,
-            3
-          ],
-          "nodes": [
-            2,
-            0
-          ],
-          "locality": "non-local",
-          "action": "Implement swap between node 2 and node 0 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
-        },
-        {
-          "step": 24,
-          "gate": "swap",
-          "qubits": [
-            3,
-            4
-          ],
-          "nodes": [
-            0,
-            1
-          ],
-          "locality": "non-local",
-          "action": "Implement swap between node 0 and node 1 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
-        },
-        {
-          "step": 25,
-          "gate": "swap",
-          "qubits": [
-            4,
-            5
-          ],
-          "nodes": [
-            1,
-            2
-          ],
-          "locality": "non-local",
-          "action": "Implement swap between node 1 and node 2 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
-        },
-        {
-          "step": 26,
-          "gate": "cp",
-          "qubits": [
-            1,
-            0
           ],
           "nodes": [
             1,
@@ -1294,11 +1060,28 @@
           "new_teleportations": 0
         },
         {
-          "step": 27,
+          "step": 18,
           "gate": "cp",
           "qubits": [
-            2,
+            3,
+            1
+          ],
+          "nodes": [
+            1,
             0
+          ],
+          "locality": "non-local",
+          "action": "Create a distributed control block from node 1 to node 0, then apply cp on the target node.",
+          "new_shared_entangled_pairs": 1,
+          "new_classical_bits": 2,
+          "new_teleportations": 0
+        },
+        {
+          "step": 19,
+          "gate": "cp",
+          "qubits": [
+            4,
+            1
           ],
           "nodes": [
             2,
@@ -1311,10 +1094,110 @@
           "new_teleportations": 0
         },
         {
-          "step": 28,
+          "step": 20,
           "gate": "cp",
           "qubits": [
+            5,
+            1
+          ],
+          "nodes": [
+            2,
+            0
+          ],
+          "locality": "non-local",
+          "action": "Create a distributed control block from node 2 to node 0, then apply cp on the target node.",
+          "new_shared_entangled_pairs": 1,
+          "new_classical_bits": 2,
+          "new_teleportations": 0
+        },
+        {
+          "step": 21,
+          "gate": "h",
+          "qubits": [
+            1
+          ],
+          "nodes": [
+            0
+          ],
+          "locality": "local",
+          "action": "Apply h locally on node 0.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
+        },
+        {
+          "step": 22,
+          "gate": "swap",
+          "qubits": [
+            1,
+            2
+          ],
+          "nodes": [
+            0,
+            1
+          ],
+          "locality": "non-local",
+          "action": "Implement swap between node 0 and node 1 using teleportation.",
+          "new_shared_entangled_pairs": 2,
+          "new_classical_bits": 4,
+          "new_teleportations": 2
+        },
+        {
+          "step": 23,
+          "gate": "swap",
+          "qubits": [
+            2,
+            3
+          ],
+          "nodes": [
+            1,
+            1
+          ],
+          "locality": "local",
+          "action": "Apply swap locally on node 1.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
+        },
+        {
+          "step": 24,
+          "gate": "swap",
+          "qubits": [
             3,
+            4
+          ],
+          "nodes": [
+            1,
+            2
+          ],
+          "locality": "non-local",
+          "action": "Implement swap between node 1 and node 2 using teleportation.",
+          "new_shared_entangled_pairs": 2,
+          "new_classical_bits": 4,
+          "new_teleportations": 2
+        },
+        {
+          "step": 25,
+          "gate": "swap",
+          "qubits": [
+            4,
+            5
+          ],
+          "nodes": [
+            2,
+            2
+          ],
+          "locality": "local",
+          "action": "Apply swap locally on node 2.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
+        },
+        {
+          "step": 26,
+          "gate": "cp",
+          "qubits": [
+            1,
             0
           ],
           "nodes": [
@@ -1328,10 +1211,10 @@
           "new_teleportations": 0
         },
         {
-          "step": 29,
+          "step": 27,
           "gate": "cp",
           "qubits": [
-            4,
+            2,
             0
           ],
           "nodes": [
@@ -1340,6 +1223,40 @@
           ],
           "locality": "non-local",
           "action": "Create a distributed control block from node 1 to node 0, then apply cp on the target node.",
+          "new_shared_entangled_pairs": 1,
+          "new_classical_bits": 2,
+          "new_teleportations": 0
+        },
+        {
+          "step": 28,
+          "gate": "cp",
+          "qubits": [
+            3,
+            0
+          ],
+          "nodes": [
+            1,
+            0
+          ],
+          "locality": "non-local",
+          "action": "Create a distributed control block from node 1 to node 0, then apply cp on the target node.",
+          "new_shared_entangled_pairs": 1,
+          "new_classical_bits": 2,
+          "new_teleportations": 0
+        },
+        {
+          "step": 29,
+          "gate": "cp",
+          "qubits": [
+            4,
+            0
+          ],
+          "nodes": [
+            2,
+            0
+          ],
+          "locality": "non-local",
+          "action": "Create a distributed control block from node 2 to node 0, then apply cp on the target node.",
           "new_shared_entangled_pairs": 1,
           "new_classical_bits": 2,
           "new_teleportations": 0
@@ -1385,13 +1302,13 @@
           ],
           "nodes": [
             0,
-            1
+            0
           ],
-          "locality": "non-local",
-          "action": "Implement swap between node 0 and node 1 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
+          "locality": "local",
+          "action": "Apply swap locally on node 0.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
         },
         {
           "step": 33,
@@ -1399,40 +1316,6 @@
           "qubits": [
             1,
             2
-          ],
-          "nodes": [
-            1,
-            2
-          ],
-          "locality": "non-local",
-          "action": "Implement swap between node 1 and node 2 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
-        },
-        {
-          "step": 34,
-          "gate": "swap",
-          "qubits": [
-            2,
-            3
-          ],
-          "nodes": [
-            2,
-            0
-          ],
-          "locality": "non-local",
-          "action": "Implement swap between node 2 and node 0 using teleportation.",
-          "new_shared_entangled_pairs": 2,
-          "new_classical_bits": 4,
-          "new_teleportations": 2
-        },
-        {
-          "step": 35,
-          "gate": "swap",
-          "qubits": [
-            3,
-            4
           ],
           "nodes": [
             0,
@@ -1445,11 +1328,28 @@
           "new_teleportations": 2
         },
         {
-          "step": 36,
+          "step": 34,
           "gate": "swap",
           "qubits": [
-            4,
-            5
+            2,
+            3
+          ],
+          "nodes": [
+            1,
+            1
+          ],
+          "locality": "local",
+          "action": "Apply swap locally on node 1.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
+        },
+        {
+          "step": 35,
+          "gate": "swap",
+          "qubits": [
+            3,
+            4
           ],
           "nodes": [
             1,
@@ -1460,11 +1360,28 @@
           "new_shared_entangled_pairs": 2,
           "new_classical_bits": 4,
           "new_teleportations": 2
+        },
+        {
+          "step": 36,
+          "gate": "swap",
+          "qubits": [
+            4,
+            5
+          ],
+          "nodes": [
+            2,
+            2
+          ],
+          "locality": "local",
+          "action": "Apply swap locally on node 2.",
+          "new_shared_entangled_pairs": 0,
+          "new_classical_bits": 0,
+          "new_teleportations": 0
         }
       ]
     }
   ],
   "recommended_method": "Standard QFT method",
-  "ideal_aer_tvd_between_methods": 0.109375,
-  "noisy_aer_tvd_between_methods": 0.375
+  "ideal_aer_tvd_between_methods": 0.078125,
+  "noisy_aer_tvd_between_methods": 0.296875
 }

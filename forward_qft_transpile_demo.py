@@ -18,6 +18,7 @@ from qft_sampler_utils import (
     top_outcomes,
     total_variation_distance,
 )
+from qft_visualization_utils import prepare_circuit_for_display
 
 
 # Build a sample input state from a chosen amplitude vector.
@@ -31,7 +32,7 @@ def build_input_circuit(amplitudes: np.ndarray) -> QuantumCircuit:
 # Print a circuit and a few simple metrics.
 def describe_circuit(label: str, circuit: QuantumCircuit) -> None:
     print(f"\n{label}:")
-    print(circuit.draw(output="text"))
+    print(prepare_circuit_for_display(circuit).draw(output="text", fold=160, idle_wires=False))
     print(f"Depth: {circuit.depth()}")
     print(f"Operations: {dict(circuit.count_ops())}")
 

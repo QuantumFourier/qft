@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from qiskit import QuantumCircuit
+from qiskit_ibm_runtime.fake_provider import FakeFez
 
 from forward_qft import build_recursive_qft, build_standard_qft
 from qft_sampler_utils import (
@@ -13,15 +14,20 @@ from qft_sampler_utils import (
     counts_summary,
     sample_aer_counts,
     sample_noisy_aer_counts,
-    select_fake_backend,
     total_variation_distance,
 )
+
+NODE_CAPACITY = 50
+TOTAL_NODES = 3
+UNUSED_PHYSICAL_QUBITS = 6
 
 
 # Split qubits across nodes using a simple placement rule.
 def build_node_mapping(num_qubits: int, num_nodes: int, strategy: str) -> dict[int, int]:
-    if num_nodes < 1 or num_nodes > num_qubits:
-        raise ValueError("num_nodes must be between 1 and num_qubits.")
+    if num_nodes < 1 or num_nodes > TOTAL_NODES:
+        raise ValueError(f"num_nodes must be between 1 and {TOTAL_NODES} for the 156-qubit chip layout.")
+    if num_nodes > num_qubits:
+        raise ValueError("num_nodes must not be greater than num_qubits.")
 
     if strategy == "interleaved":
         return {qubit: qubit % num_nodes for qubit in range(num_qubits)}
@@ -38,6 +44,44 @@ def build_node_mapping(num_qubits: int, num_nodes: int, strategy: str) -> dict[i
             qubit += 1
 
     return mapping
+
+
+# Describe the fixed three-node layout on the 156-qubit chip.
+def distributed_chip_layout() -> dict:
+    nodes = []
+    for node in range(TOTAL_NODES):
+        start = node * NODE_CAPACITY
+        end = start + NODE_CAPACITY - 1
+        nodes.append(
+            {
+                "node": node,
+                "physical_qubit_range": [start, end],
+                "capacity": NODE_CAPACITY,
+            }
+        )
+
+    return {
+        "backend_name": "fake_fez",
+        "total_physical_qubits": TOTAL_NODES * NODE_CAPACITY + UNUSED_PHYSICAL_QUBITS,
+        "nodes": nodes,
+        "unused_physical_qubit_range": [TOTAL_NODES * NODE_CAPACITY, TOTAL_NODES * NODE_CAPACITY + UNUSED_PHYSICAL_QUBITS - 1],
+    }
+
+
+# Map each logical qubit to a physical qubit slot within its assigned node.
+def logical_to_physical_mapping(node_mapping: dict[int, int]) -> dict[int, int]:
+    usage_by_node = {node: 0 for node in range(TOTAL_NODES)}
+    physical_mapping: dict[int, int] = {}
+
+    for logical_qubit in sorted(node_mapping):
+        node = node_mapping[logical_qubit]
+        slot = usage_by_node[node]
+        if slot >= NODE_CAPACITY:
+            raise ValueError(f"Node {node} exceeds its {NODE_CAPACITY}-qubit capacity.")
+        physical_mapping[logical_qubit] = node * NODE_CAPACITY + slot
+        usage_by_node[node] += 1
+
+    return physical_mapping
 
 
 # Turn circuit qubits into integer indices for reporting.
@@ -215,6 +259,7 @@ def collect_method_report(
     return {
         "method": label,
         "node_mapping": node_mapping,
+        "physical_qubit_mapping": logical_to_physical_mapping(node_mapping),
         "aer": aer_report,
         **costs,
     }
@@ -314,7 +359,8 @@ def main() -> None:
 
     node_mapping = build_node_mapping(args.qubits, args.nodes, args.strategy)
     amplitudes = build_sample_amplitudes(args.qubits)
-    backend = select_fake_backend(args.qubits)
+    backend = FakeFez()
+    chip_layout = distributed_chip_layout()
     reports = [
         collect_method_report(
             "Standard QFT method",
@@ -353,6 +399,7 @@ def main() -> None:
         "num_nodes": args.nodes,
         "partition_strategy": args.strategy,
         "backend_name": backend.name,
+        "chip_layout": chip_layout,
         "reports": reports,
         "recommended_method": best_method["method"],
         "ideal_aer_tvd_between_methods": ideal_aer_distance,
@@ -366,7 +413,9 @@ def main() -> None:
     output_path.write_text(json.dumps(report, indent=2))
 
     print(f"Node mapping: {node_mapping}")
-    print(f"Using fake backend: {backend.name}\n")
+    print(f"Physical mapping: {reports[0]['physical_qubit_mapping']}")
+    print(f"Using fake backend: {backend.name}")
+    print(f"Node layout: {[node['physical_qubit_range'] for node in chip_layout['nodes']]}, unused {chip_layout['unused_physical_qubit_range']}\n")
     print_summary(reports)
     print_aer_summaries(reports)
     if ideal_aer_distance is not None:

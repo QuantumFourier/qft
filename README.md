@@ -10,6 +10,14 @@ This folder contains Python code for comparing the standard QFT method, the recu
   - recursive QFT
   - direct DFT-based amplitude check
 
+- `multidimensional_qft.py`
+  Contains the multidimensional QFT implementation. It:
+  - validates multidimensional shapes
+  - pads non-power-of-two dimensions with zeros up to the next power of two
+  - flattens arrays into quantum-state vectors
+  - applies one QFT block per dimension
+  - computes the expected multidimensional DFT result for comparison
+
 - `forward_qft_transpile_demo.py`
   Main demo script for the standard QFT method and recursive QFT. It:
   - builds both circuits
@@ -18,10 +26,28 @@ This folder contains Python code for comparing the standard QFT method, the recu
   - runs Aer simulation
   - transpiles the circuits for a fake backend
 
+- `standard_recursive_qft_notebook.ipynb`
+  Notebook version of the standard and recursive QFT demo with step-by-step outputs and visualizations.
+
 - `test_forward_qft.py`
   Correctness test script. It checks that:
   - the QFT circuits match Qiskit's reference implementation
   - the output amplitudes match the expected transform
+
+- `multidimensional_qft_demo.py`
+  Main multidimensional QFT demo. It:
+  - builds a multidimensional input array
+  - encodes it into a quantum state
+  - runs the standard and recursive multidimensional QFT circuits
+  - compares them with the expected multidimensional DFT
+  - runs ideal and noisy Aer simulations
+  - shows transpilation results
+
+- `multidimensional_qft_notebook.ipynb`
+  Notebook version of the multidimensional QFT demo, including padded examples and visualizations.
+
+- `test_multidimensional_qft.py`
+  Correctness test for the multidimensional QFT implementation.
 
 - `distributed_qft_comparison.py`
   Compares the standard QFT method and recursive QFT in a distributed setting. It:
@@ -30,6 +56,9 @@ This folder contains Python code for comparing the standard QFT method, the recu
   - estimates communication cost
   - runs Aer simulations
   - prints a recommendation
+
+- `distributed_qft_notebook.ipynb`
+  Notebook version of the distributed QFT comparison with plots, counts, and execution-log output.
 
 - `qft_implementation_metrics.py`
   Generates implementation metrics such as:
@@ -94,6 +123,23 @@ Run the distributed comparison with custom settings:
 ```bash
 python distributed_qft_comparison.py --qubits 6 --nodes 3 --strategy contiguous --shots 128
 python distributed_qft_comparison.py --qubits 6 --nodes 3 --strategy interleaved --shots 128 --show-full-log
+```
+
+Run the multidimensional QFT demo:
+
+```bash
+python multidimensional_qft_demo.py
+python multidimensional_qft_demo.py --shape 4 2 --shots 128 --method both
+python multidimensional_qft_demo.py --shape 4 2 2 --shots 128 --method both
+python multidimensional_qft_demo.py --shape 3 2 --shots 64 --method both
+python multidimensional_qft_demo.py --shape 9 4 --shots 128 --method both
+python multidimensional_qft_demo.py --shape 8 8 --shots 256 --method standard
+```
+
+Run the multidimensional QFT test:
+
+```bash
+python test_multidimensional_qft.py
 ```
 
 Generate the metrics report:
