@@ -8,7 +8,7 @@ This folder contains Python code for comparing the standard QFT method, the recu
   Contains the standard QFT method and recursive QFT implementation, demo, notebook, and test.
 
 - `distributed_qft/`
-  Contains the distributed QFT comparison script, notebook, and generated JSON reports.
+  Contains the distributed QFT comparison script, notebook, illustrative non-local subcircuits, and generated JSON reports.
 
 - `multidimensional_qft/`
   Contains the multidimensional QFT implementation, demo, notebook, and test.
@@ -70,6 +70,14 @@ This folder contains Python code for comparing the standard QFT method, the recu
   - estimates communication cost
   - runs Aer simulations
   - prints a recommendation
+
+- `distributed_qft/distributed_qft_blocks.py`
+  Contains explicit visualization-oriented distributed building blocks, including:
+  - cat-entangler
+  - cat-disentangler
+  - entanglement-assisted non-local controlled phase
+  - teleportation leg
+  - teleportation-based distributed swap
 
 - `distributed_qft/distributed_qft_notebook.ipynb`
   Notebook version of the distributed QFT comparison with plots, counts, and execution-log output.
