@@ -90,6 +90,14 @@ This folder contains Python code for comparing the standard QFT method, the recu
   - CNOT counts
   - estimated backend cost
 
+- `environment_benchmark.py`
+  Saves cross-environment benchmarking reports for laptop and HPC comparison. It records:
+  - runtime
+  - peak memory use
+  - maximum problem size handled from the tested sweep
+  - stability and reproducibility across repeated seeded runs
+  - ideal-Aer and noisy-Aer measurement summaries
+
 - `qft_sampler_utils.py`
   Shared helper functions for:
   - building sample input states
@@ -169,6 +177,15 @@ Generate the metrics report:
 ```bash
 python qft_implementation_metrics.py
 python qft_implementation_metrics.py --qubits 4 --optimization-level 3
+```
+
+Generate a laptop/HPC comparison report:
+
+```bash
+python environment_benchmark.py --label laptop --output laptop_benchmark.json
+python environment_benchmark.py --label hpc --output hpc_benchmark.json
+python environment_benchmark.py --experiments standard_qft --standard-qubits 3 4 5 6 --repeats 5 --shots 512 --label hpc --output hpc_standard_benchmark.json
+python environment_benchmark.py --experiments multidimensional_qft --multidimensional-shapes 4x2 4x2x2 8x8 --repeats 5 --shots 512 --label laptop --output laptop_multidim_benchmark.json
 ```
 
 Export backend properties:

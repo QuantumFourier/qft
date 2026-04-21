@@ -48,19 +48,45 @@ def select_fake_backend(num_qubits: int):
 
 
 # Run an ideal Aer simulation for a measured QFT circuit.
-def sample_aer_counts(circuit: QuantumCircuit, shots: int, method: str = "automatic") -> dict[str, int]:
+def sample_aer_counts(
+    circuit: QuantumCircuit,
+    shots: int,
+    method: str = "automatic",
+    *,
+    seed_simulator: int | None = None,
+    seed_transpiler: int | None = None,
+) -> dict[str, int]:
     AerSimulator = require_aer()
-    simulator = AerSimulator() if method == "automatic" else AerSimulator(method=method)
-    transpiled = transpile(circuit, simulator)
+    simulator_kwargs: dict[str, Any] = {}
+    if seed_simulator is not None:
+        simulator_kwargs["seed_simulator"] = seed_simulator
+    simulator = AerSimulator(**simulator_kwargs) if method == "automatic" else AerSimulator(method=method, **simulator_kwargs)
+    transpile_kwargs: dict[str, Any] = {}
+    if seed_transpiler is not None:
+        transpile_kwargs["seed_transpiler"] = seed_transpiler
+    transpiled = transpile(circuit, simulator, **transpile_kwargs)
     result = simulator.run(transpiled, shots=shots).result()
     return dict(result.get_counts(0))
 
 
 # Run a noisy Aer simulation using a fake backend as the noise source.
-def sample_noisy_aer_counts(circuit: QuantumCircuit, backend, shots: int) -> dict[str, int]:
+def sample_noisy_aer_counts(
+    circuit: QuantumCircuit,
+    backend,
+    shots: int,
+    *,
+    seed_simulator: int | None = None,
+    seed_transpiler: int | None = None,
+) -> dict[str, int]:
     AerSimulator = require_aer()
-    simulator = AerSimulator.from_backend(backend)
-    transpiled = transpile(circuit, simulator)
+    simulator_kwargs: dict[str, Any] = {}
+    if seed_simulator is not None:
+        simulator_kwargs["seed_simulator"] = seed_simulator
+    simulator = AerSimulator.from_backend(backend, **simulator_kwargs)
+    transpile_kwargs: dict[str, Any] = {}
+    if seed_transpiler is not None:
+        transpile_kwargs["seed_transpiler"] = seed_transpiler
+    transpiled = transpile(circuit, simulator, **transpile_kwargs)
     result = simulator.run(transpiled, shots=shots).result()
     return dict(result.get_counts(0))
 

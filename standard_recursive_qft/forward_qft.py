@@ -23,8 +23,8 @@ def dft_amplitudes(amplitudes: np.ndarray) -> np.ndarray:
 # Standard QFT method built from H, controlled-phase, and SWAP gates.
 def build_standard_qft(num_qubits: int, do_swaps: bool = True) -> QuantumCircuit:
     """Build the standard QFT method using H, controlled-phase, and SWAP gates."""
-    if num_qubits < 1:
-        raise ValueError("num_qubits must be at least 1.")
+    if num_qubits < 0:
+        raise ValueError("num_qubits must be non-negative.")
 
     circuit = QuantumCircuit(num_qubits, name=f"QFT_{num_qubits}")
 
@@ -44,16 +44,20 @@ def build_standard_qft(num_qubits: int, do_swaps: bool = True) -> QuantumCircuit
 # Recursive QFT construction based on the smaller subcircuit.
 def build_recursive_qft(num_qubits: int) -> QuantumCircuit:
     """Build the recursive QFT using the recursive construction."""
-    if num_qubits < 1:
-        raise ValueError("num_qubits must be at least 1.")
+    if num_qubits < 0:
+        raise ValueError("num_qubits must be non-negative.")
 
     circuit = QuantumCircuit(num_qubits, name=f"RecursiveQFT_{num_qubits}")
-    _append_recursive_qft(circuit, list(range(num_qubits)))
+    if num_qubits > 0:
+        _append_recursive_qft(circuit, list(range(num_qubits)))
     return circuit
 
 
 # Recursive helper that adds the next layer of gates in place.
 def _append_recursive_qft(circuit: QuantumCircuit, qubits: list[int]) -> None:
+    if not qubits:
+        return
+
     if len(qubits) == 1:
         circuit.h(qubits[0])
         return
