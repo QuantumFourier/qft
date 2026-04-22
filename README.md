@@ -1,6 +1,6 @@
 # QFT-Library
 
-This folder contains Python code for comparing the standard QFT method, the recursive QFT, a distributed-QFT cost model, and multidimensional QFT.
+This library contains Python code for comparing the standard QFT method, the recursive QFT, a distributed-QFT cost model, and multidimensional QFT.
 
 ## Folder Layout
 
