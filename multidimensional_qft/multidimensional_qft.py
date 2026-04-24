@@ -9,12 +9,12 @@ from qiskit import QuantumCircuit, QuantumRegister
 
 CURRENT_DIR = Path(__file__).resolve().parent
 PARENT_DIR = CURRENT_DIR.parent
-STANDARD_DIR = PARENT_DIR / "standard_recursive_qft"
-for candidate in (PARENT_DIR, STANDARD_DIR):
+SRC_DIR = PARENT_DIR / "src"
+for candidate in (PARENT_DIR, SRC_DIR):
     if str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))
 
-from forward_qft import build_recursive_qft, build_standard_qft
+from qft.standard_recursive_qft import build_recursive_qft, build_standard_qft
 
 
 # Round a positive integer up to the next power of two.

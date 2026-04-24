@@ -10,10 +10,12 @@ from qiskit.circuit.library import QFTGate
 from qiskit.quantum_info import Operator, Statevector
 
 PARENT_DIR = Path(__file__).resolve().parent.parent
-if str(PARENT_DIR) not in sys.path:
-    sys.path.insert(0, str(PARENT_DIR))
+SRC_DIR = PARENT_DIR / "src"
+for candidate in (PARENT_DIR, SRC_DIR):
+    if str(candidate) not in sys.path:
+        sys.path.insert(0, str(candidate))
 
-from forward_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
+from qft.standard_recursive_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
 
 
 def assert_qft_matches_reference(num_qubits: int) -> None:

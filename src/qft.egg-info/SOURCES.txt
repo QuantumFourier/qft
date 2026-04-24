@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+src/qft/__init__.py
+src/qft/recursive.py
+src/qft/standard.py
+src/qft/standard_recursive_qft.py
+src/qft.egg-info/PKG-INFO
+src/qft.egg-info/SOURCES.txt
+src/qft.egg-info/dependency_links.txt
+src/qft.egg-info/requires.txt
+src/qft.egg-info/top_level.txt
+tests/test_qft_package.py

@@ -21,15 +21,14 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
 CURRENT_DIR = Path(__file__).resolve().parent
-STANDARD_DIR = CURRENT_DIR / "standard_recursive_qft"
+SRC_DIR = CURRENT_DIR / "src"
 MULTIDIMENSIONAL_DIR = CURRENT_DIR / "multidimensional_qft"
 DISTRIBUTED_DIR = CURRENT_DIR / "distributed_qft"
-for candidate in (CURRENT_DIR, STANDARD_DIR, MULTIDIMENSIONAL_DIR, DISTRIBUTED_DIR):
+for candidate in (CURRENT_DIR, SRC_DIR, MULTIDIMENSIONAL_DIR, DISTRIBUTED_DIR):
     if str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))
 
 from distributed_qft_comparison import analyze_distributed_costs, build_node_mapping, choose_best_method
-from forward_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
 from multidimensional_qft import (
     build_multidimensional_qft,
     dimension_qubit_widths,
@@ -37,6 +36,7 @@ from multidimensional_qft import (
     padded_shape,
     prepare_multidimensional_input,
 )
+from qft.standard_recursive_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
 from qft_sampler_utils import (
     build_measured_qft_circuit,
     build_sample_amplitudes,
