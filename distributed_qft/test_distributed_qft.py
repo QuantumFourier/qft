@@ -26,7 +26,7 @@ from distributed_qft_comparison import (
     distributed_chip_layout,
     logical_to_physical_mapping,
 )
-from qft.standard_recursive_qft import build_standard_qft
+from qft.standard_qft import build_standard_qft
 
 
 def test_build_node_mapping_contiguous_assigns_balanced_blocks() -> None:

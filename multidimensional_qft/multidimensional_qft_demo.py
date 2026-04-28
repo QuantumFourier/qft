@@ -31,7 +31,7 @@ from qft_sampler_utils import (
     top_outcomes,
     total_variation_distance,
 )
-from qft_visualization_utils import prepare_circuit_for_display
+from qft_visualization_utils import draw_circuit_text
 
 
 # Build a simple deterministic array for demonstration.
@@ -50,7 +50,7 @@ def describe_counts(label: str, counts: dict[str, int]) -> None:
 # Print simple circuit metrics.
 def describe_circuit(label: str, circuit: QuantumCircuit) -> None:
     print(f"\n{label}:")
-    print(prepare_circuit_for_display(circuit).draw(output="text", fold=160, idle_wires=False))
+    print(draw_circuit_text(circuit, fold=160, idle_wires=False))
     print(f"Depth: {circuit.depth()}")
     print(f"Operations: {dict(circuit.count_ops())}")
 

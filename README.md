@@ -2,10 +2,96 @@
 
 This library contains Python code for comparing the standard QFT method, the recursive QFT, a distributed-QFT cost model, and multidimensional QFT.
 
+## Local Environment Installation
+
+Clone the GitHub repository first:
+
+```bash
+git clone https://github.com/QuantumFourier/qft.git
+cd qft
+```
+
+Install the package in editable mode from the repository root so local changes under `src/qft/` are available immediately. In a notebook opened from the cloned repository, use:
+
+```python
+%pip install -e .
+```
+
+From a terminal opened at the repository root, the equivalent command is:
+
+```bash
+python -m pip install -e .
+```
+
+## Importing the QFT Library
+
+```python
+import qft
+```
+
+## How to Use QFT
+
+The package exposes a convenience function that builds a Qiskit `QuantumCircuit`:
+
+```python
+circuit = qft.qft(n, do_swap=True, recursive=False)
+```
+
+- `n` is the number of qubits.
+- `do_swap` controls whether the standard QFT circuit performs the final qubit-reversal swaps.
+- `recursive=True` builds the recursive QFT implementation through the same public entry point. In this mode, `do_swap` is ignored because the recursive construction performs its own final qubit reordering.
+
+Examples:
+
+```python
+standard_circuit = qft.qft(4)
+standard_without_swaps = qft.qft(4, do_swap=False)
+recursive_circuit = qft.qft(4, recursive=True)
+```
+
+## Drawing and Intermediate States
+
+The package also provides a drawing helper that can insert barriers between logical stages and return intermediate statevectors after each stage:
+
+```python
+result = qft.draw_qft(
+    4,
+    do_swap=True,
+    recursive=False,
+    show_barriers=True,
+    show_intermediate_states=True,
+    output="text",
+)
+```
+
+- `result.circuit` is the constructed QFT circuit, including barriers if requested.
+- `result.drawing` is the rendered circuit output as text or a Matplotlib figure.
+- `result.intermediate_states` is a list of labeled statevector snapshots, one per stage of the QFT construction.
+
+Example:
+
+```python
+amplitudes = [1, 2, 3, 4]
+result = qft.draw_qft(
+    2,
+    show_barriers=True,
+    show_intermediate_states=True,
+    amplitudes=amplitudes,
+)
+
+print(result.drawing)
+for snapshot in result.intermediate_states:
+    print(snapshot.label)
+    print(snapshot.statevector)
+```
+
 ## Folder Layout
 
-- `standard_recursive_qft/`
-  Contains the standard QFT method and recursive QFT implementation, demo, notebook, and test.
+- `src/qft/`
+  Contains the importable Python package. The public API is exposed from `qft.__init__`, and the standard and recursive QFT builders live in `src/qft/standard_qft.py`.
+
+- `standard_qft/`
+  Contains the standard and recursive QFT demo, notebook, and test scripts.
 
 - `distributed_qft/`
   Contains the distributed QFT comparison script, notebook, illustrative non-local subcircuits, and generated JSON reports.
@@ -18,7 +104,7 @@ This library contains Python code for comparing the standard QFT method, the rec
 
 ## Files
 
-- `standard_recursive_qft/forward_qft.py`
+- `src/qft/standard_qft.py`
   Contains the core QFT implementations:
   - standard QFT method
   - recursive QFT
@@ -32,7 +118,7 @@ This library contains Python code for comparing the standard QFT method, the rec
   - applies one QFT block per dimension
   - computes the expected multidimensional DFT result for comparison
 
-- `standard_recursive_qft/forward_qft_transpile_demo.py`
+- `standard_qft/forward_qft_transpile_demo.py`
   Main demo script for the standard QFT method and recursive QFT. It:
   - builds both circuits
   - compares them to Qiskit's built-in QFT
@@ -40,10 +126,10 @@ This library contains Python code for comparing the standard QFT method, the rec
   - runs Aer simulation
   - transpiles the circuits for a fake backend
 
-- `standard_recursive_qft/standard_recursive_qft_notebook.ipynb`
+- `standard_qft/standard_qft_notebook.ipynb`
   Notebook version of the standard and recursive QFT demo with step-by-step outputs and visualizations.
 
-- `standard_recursive_qft/test_forward_qft.py`
+- `standard_qft/test_forward_qft.py`
   Correctness test script. It checks that:
   - the QFT circuits match Qiskit's reference implementation
   - the output amplitudes match the expected transform
@@ -125,21 +211,21 @@ This library contains Python code for comparing the standard QFT method, the rec
 Run the QFT correctness test:
 
 ```bash
-python standard_recursive_qft/test_forward_qft.py
+python standard_qft/test_forward_qft.py
 ```
 
 Run the main QFT demo:
 
 ```bash
-python standard_recursive_qft/forward_qft_transpile_demo.py
+python standard_qft/forward_qft_transpile_demo.py
 ```
 
 Run the main QFT demo with custom settings:
 
 ```bash
-python standard_recursive_qft/forward_qft_transpile_demo.py --qubits 3 --shots 64 --method both
-python standard_recursive_qft/forward_qft_transpile_demo.py --qubits 4 --shots 128 --method standard
-python standard_recursive_qft/forward_qft_transpile_demo.py --qubits 4 --shots 128 --method recursive
+python standard_qft/forward_qft_transpile_demo.py --qubits 3 --shots 64 --method both
+python standard_qft/forward_qft_transpile_demo.py --qubits 4 --shots 128 --method standard
+python standard_qft/forward_qft_transpile_demo.py --qubits 4 --shots 128 --method recursive
 ```
 
 Run the distributed QFT comparison:
@@ -196,8 +282,10 @@ python export_backend_properties.py
 
 ## Notes
 
-- If `qiskit-aer` is missing, it can be installed using the following command:
+- `pylatexenc`, `matplotlib`, `qiskit-aer`, and `qiskit-ibm-runtime` are installed as package dependencies so the demos and notebooks can draw circuits, run Aer simulations, and use Qiskit fake backends.
+
+- If a notebook still reports a missing dependency after selecting a new environment, reinstall this project into that environment:
 
 ```bash
-python -m pip install qiskit-aer
+python -m pip install -e .
 ```

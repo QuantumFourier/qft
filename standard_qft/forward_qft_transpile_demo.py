@@ -16,7 +16,7 @@ for candidate in (PARENT_DIR, SRC_DIR):
     if str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))
 
-from qft.standard_recursive_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
+from qft.standard_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
 from qft_sampler_utils import (
     build_measured_qft_circuit,
     build_sample_amplitudes,
@@ -26,7 +26,7 @@ from qft_sampler_utils import (
     top_outcomes,
     total_variation_distance,
 )
-from qft_visualization_utils import prepare_circuit_for_display
+from qft_visualization_utils import draw_circuit_text
 
 
 # Build a sample input state from a chosen amplitude vector.
@@ -40,7 +40,7 @@ def build_input_circuit(amplitudes: np.ndarray) -> QuantumCircuit:
 # Print a circuit and a few simple metrics.
 def describe_circuit(label: str, circuit: QuantumCircuit) -> None:
     print(f"\n{label}:")
-    print(prepare_circuit_for_display(circuit).draw(output="text", fold=160, idle_wires=False))
+    print(draw_circuit_text(circuit, fold=160, idle_wires=False))
     print(f"Depth: {circuit.depth()}")
     print(f"Operations: {dict(circuit.count_ops())}")
 

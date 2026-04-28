@@ -36,7 +36,7 @@ from multidimensional_qft import (
     padded_shape,
     prepare_multidimensional_input,
 )
-from qft.standard_recursive_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
+from qft.standard_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
 from qft_sampler_utils import (
     build_measured_qft_circuit,
     build_sample_amplitudes,

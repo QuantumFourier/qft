@@ -23,13 +23,17 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 dependencies = [
+  "matplotlib>=3.7",
   "numpy>=1.24",
+  "pylatexenc>=2.10",
   "qiskit>=1.0",
+  "qiskit-aer>=0.14",
+  "qiskit-ibm-runtime>=0.45",
 ]
 
 [project.urls]
-Homepage = "https://github.com/aaravshaurya/qft"
-Repository = "https://github.com/aaravshaurya/qft"
+Homepage = "https://github.com/QuantumFourier/qft"
+Repository = "https://github.com/QuantumFourier/qft"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

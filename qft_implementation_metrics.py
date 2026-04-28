@@ -16,7 +16,7 @@ for candidate in (CURRENT_DIR, SRC_DIR):
     if str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))
 
-from qft.standard_recursive_qft import build_recursive_qft, build_standard_qft
+from qft.standard_qft import build_recursive_qft, build_standard_qft
 from qft_sampler_utils import select_fake_backend
 
 
