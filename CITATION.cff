@@ -1,0 +1,14 @@
+cff-version: 1.0.0
+message: "If you use this repo, please cite it as below."
+authors:
+- family-names: "Kumar"
+  given-names: "Mithilesh"
+  orcid: "https://orcid.org/0009-0005-0450-1843"
+- family-names: "Shaurya"
+  given-names: "Aarav"
+  orcid: "https://orcid.org/0009-0008-9732-6424"
+title: "Quantum Fourier Transform"
+version: 1.0.0
+doi: 10.5281/zenodo.19906677
+date-released: 2026-04-30
+url: "https://github.com/QuantumFourier/qft"
