@@ -15,7 +15,11 @@ if str(SRC_DIR) not in sys.path:
 
 import qft as qft_package
 from qft import (
+    DistributedQFTBuildResult,
+    build,
     build_recursive_qft,
+    build_distributed_qft,
+    build_multidimensional_qft,
     build_standard_qft,
     draw_qft,
     qft,
@@ -73,6 +77,60 @@ def test_qft_accepts_professor_style_public_arguments() -> None:
     assert Operator(public_circuit).equiv(Operator(expected))
     assert Operator(package_function).equiv(Operator(expected))
     assert Operator(keyword_form).equiv(Operator(expected))
+
+
+def test_build_dispatches_standard_qft() -> None:
+    dispatched = build(kind="standard", num_qubits=4, do_swap=False, recursive=False)
+    expected = build_standard_qft(4, do_swaps=False)
+    assert Operator(dispatched).equiv(Operator(expected))
+
+
+def test_build_dispatches_multidimensional_qft() -> None:
+    dispatched = build(kind="multidimensional", shape=(4, 2), method="recursive")
+    expected = build_multidimensional_qft((4, 2), method="recursive")
+    assert Operator(dispatched).equiv(Operator(expected))
+
+
+def test_build_dispatches_distributed_qft() -> None:
+    distributed_result = build(
+        kind="distributed",
+        num_qubits=4,
+        num_nodes=2,
+        strategy="contiguous",
+        shots=32,
+    )
+
+    direct_result = build_distributed_qft(
+        4,
+        num_nodes=2,
+        strategy="contiguous",
+        shots=32,
+    )
+
+    assert isinstance(distributed_result, DistributedQFTBuildResult)
+    assert distributed_result.node_mapping == {0: 0, 1: 0, 2: 1, 3: 1}
+    assert distributed_result.recommended_method in {"standard", "recursive"}
+    assert len(distributed_result.reports) == 2
+    assert Operator(distributed_result.standard_circuit).equiv(Operator(direct_result.standard_circuit))
+    assert Operator(distributed_result.recursive_circuit).equiv(Operator(direct_result.recursive_circuit))
+
+
+@pytest.mark.parametrize(
+    ("kind", "kwargs"),
+    (
+        ("standard", {}),
+        ("multidimensional", {}),
+        ("distributed", {}),
+    ),
+)
+def test_build_requires_the_expected_core_argument(kind: str, kwargs: dict) -> None:
+    with pytest.raises(TypeError):
+        build(kind=kind, **kwargs)
+
+
+def test_build_rejects_unknown_kind() -> None:
+    with pytest.raises(ValueError):
+        build(kind="unknown")
 
 
 def test_draw_qft_adds_barriers_only_when_requested() -> None:

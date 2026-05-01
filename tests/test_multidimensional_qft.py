@@ -14,7 +14,7 @@ for candidate in (PARENT_DIR, CURRENT_DIR):
     if str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))
 
-from multidimensional_qft import (
+from qft.multidimensional import (
     build_multidimensional_qft,
     expected_multidimensional_qft_state,
     padded_shape,

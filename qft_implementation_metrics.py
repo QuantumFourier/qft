@@ -17,7 +17,7 @@ for candidate in (CURRENT_DIR, SRC_DIR):
         sys.path.insert(0, str(candidate))
 
 from qft.standard_qft import build_recursive_qft, build_standard_qft
-from qft_sampler_utils import select_fake_backend
+from qft.sampler_utils import select_fake_backend
 
 
 # Build one QFT circuit and record how long construction takes.

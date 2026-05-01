@@ -28,8 +28,8 @@ for candidate in (CURRENT_DIR, SRC_DIR, MULTIDIMENSIONAL_DIR, DISTRIBUTED_DIR):
     if str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))
 
-from distributed_qft_comparison import analyze_distributed_costs, build_node_mapping, choose_best_method
-from multidimensional_qft import (
+from qft.distributed import analyze_distributed_costs, build_node_mapping, choose_best_method
+from qft.multidimensional import (
     build_multidimensional_qft,
     dimension_qubit_widths,
     expected_multidimensional_qft_state,
@@ -37,7 +37,7 @@ from multidimensional_qft import (
     prepare_multidimensional_input,
 )
 from qft.standard_qft import build_recursive_qft, build_standard_qft, qft_on_amplitudes
-from qft_sampler_utils import (
+from qft.sampler_utils import (
     build_measured_qft_circuit,
     build_sample_amplitudes,
     counts_summary,

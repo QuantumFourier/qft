@@ -11,20 +11,20 @@ for candidate in (PARENT_DIR, SRC_DIR):
     if str(candidate) not in sys.path:
         sys.path.insert(0, str(candidate))
 
-from distributed_qft_blocks import (
+from qft.distributed import (
+    analyze_distributed_costs,
+    build_node_mapping,
+    choose_best_method,
+    distributed_chip_layout,
+    logical_to_physical_mapping,
+)
+from qft.distributed_blocks import (
     build_bell_pair_resource,
     build_cat_disentangler_block,
     build_cat_entangler_block,
     build_nonlocal_controlled_phase_demo,
     build_teleportation_leg_demo,
     build_teleportation_swap_demo,
-)
-from distributed_qft_comparison import (
-    analyze_distributed_costs,
-    build_node_mapping,
-    choose_best_method,
-    distributed_chip_layout,
-    logical_to_physical_mapping,
 )
 from qft.standard_qft import build_standard_qft
 

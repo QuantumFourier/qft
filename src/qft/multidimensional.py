@@ -1,20 +1,11 @@
 from __future__ import annotations
 
 from math import log2
-import sys
-from pathlib import Path
 
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
 
-CURRENT_DIR = Path(__file__).resolve().parent
-PARENT_DIR = CURRENT_DIR.parent
-SRC_DIR = PARENT_DIR / "src"
-for candidate in (PARENT_DIR, SRC_DIR):
-    if str(candidate) not in sys.path:
-        sys.path.insert(0, str(candidate))
-
-from qft.standard_qft import build_recursive_qft, build_standard_qft
+from .standard_qft import build_recursive_qft, build_standard_qft
 
 
 # Round a positive integer up to the next power of two.

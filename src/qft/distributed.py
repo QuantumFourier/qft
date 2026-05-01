@@ -2,21 +2,14 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 from qiskit import QuantumCircuit
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
-CURRENT_DIR = Path(__file__).resolve().parent
-PARENT_DIR = CURRENT_DIR.parent
-SRC_DIR = PARENT_DIR / "src"
-for candidate in (PARENT_DIR, SRC_DIR):
-    if str(candidate) not in sys.path:
-        sys.path.insert(0, str(candidate))
-
-from qft.standard_qft import build_recursive_qft, build_standard_qft
-from qft_sampler_utils import (
+from .standard_qft import build_recursive_qft, build_standard_qft
+from .sampler_utils import (
     build_measured_qft_circuit,
     build_sample_amplitudes,
     counts_summary,
@@ -28,6 +21,25 @@ from qft_sampler_utils import (
 NODE_CAPACITY = 50
 TOTAL_NODES = 3
 UNUSED_PHYSICAL_QUBITS = 6
+
+
+@dataclass(frozen=True)
+class DistributedQFTBuildResult:
+    """Result of building and analyzing a distributed QFT setup."""
+
+    num_qubits: int
+    num_nodes: int
+    strategy: str
+    node_mapping: dict[int, int]
+    physical_qubit_mapping: dict[int, int]
+    chip_layout: dict
+    standard_circuit: QuantumCircuit
+    recursive_circuit: QuantumCircuit
+    reports: list[dict]
+    recommended_method: str
+    recommended_circuit: QuantumCircuit
+    ideal_aer_tvd_between_methods: float | None
+    noisy_aer_tvd_between_methods: float | None
 
 
 # Split qubits across nodes using a simple placement rule.
@@ -288,6 +300,74 @@ def choose_best_method(reports: list[dict]) -> dict:
     )
 
 
+def build_distributed_qft(
+    num_qubits: int,
+    *,
+    num_nodes: int = 2,
+    strategy: str = "contiguous",
+    shots: int = 2048,
+) -> DistributedQFTBuildResult:
+    """Build the distributed QFT comparison artifact for a chosen partition."""
+    node_mapping = build_node_mapping(num_qubits, num_nodes, strategy)
+    amplitudes = build_sample_amplitudes(num_qubits)
+    backend = FakeFez()
+    chip_layout = distributed_chip_layout()
+    standard_circuit = build_standard_qft(num_qubits)
+    recursive_circuit = build_recursive_qft(num_qubits)
+    reports = [
+        collect_method_report(
+            "standard",
+            build_standard_qft,
+            num_qubits,
+            node_mapping,
+            amplitudes,
+            backend,
+            shots=shots,
+        ),
+        collect_method_report(
+            "recursive",
+            build_recursive_qft,
+            num_qubits,
+            node_mapping,
+            amplitudes,
+            backend,
+            shots=shots,
+        ),
+    ]
+    best_method = choose_best_method(reports)
+    ideal_aer_distance = None
+    noisy_aer_distance = None
+    if reports[0]["aer"]["available"] and reports[1]["aer"]["available"]:
+        ideal_aer_distance = total_variation_distance(
+            reports[0]["aer"]["ideal"]["counts"],
+            reports[1]["aer"]["ideal"]["counts"],
+        )
+        noisy_aer_distance = total_variation_distance(
+            reports[0]["aer"]["noisy"]["counts"],
+            reports[1]["aer"]["noisy"]["counts"],
+        )
+
+    recommended_circuit = (
+        standard_circuit if best_method["method"] == "standard" else recursive_circuit
+    )
+
+    return DistributedQFTBuildResult(
+        num_qubits=num_qubits,
+        num_nodes=num_nodes,
+        strategy=strategy,
+        node_mapping=node_mapping,
+        physical_qubit_mapping=logical_to_physical_mapping(node_mapping),
+        chip_layout=chip_layout,
+        standard_circuit=standard_circuit,
+        recursive_circuit=recursive_circuit,
+        reports=reports,
+        recommended_method=best_method["method"],
+        recommended_circuit=recommended_circuit,
+        ideal_aer_tvd_between_methods=ideal_aer_distance,
+        noisy_aer_tvd_between_methods=noisy_aer_distance,
+    )
+
+
 # Print a compact summary table.
 def print_summary(reports: list[dict]) -> None:
     print(
@@ -365,74 +445,47 @@ def main() -> None:
     parser.add_argument("--shots", type=int, default=2048, help="Number of Aer shots to use.")
     args = parser.parse_args()
 
-    node_mapping = build_node_mapping(args.qubits, args.nodes, args.strategy)
-    amplitudes = build_sample_amplitudes(args.qubits)
-    backend = FakeFez()
-    chip_layout = distributed_chip_layout()
-    reports = [
-        collect_method_report(
-            "Standard QFT method",
-            build_standard_qft,
-            args.qubits,
-            node_mapping,
-            amplitudes,
-            backend,
-            shots=args.shots,
-        ),
-        collect_method_report(
-            "Recursive QFT",
-            build_recursive_qft,
-            args.qubits,
-            node_mapping,
-            amplitudes,
-            backend,
-            shots=args.shots,
-        ),
-    ]
-    best_method = choose_best_method(reports)
-    ideal_aer_distance = None
-    noisy_aer_distance = None
-    if reports[0]["aer"]["available"] and reports[1]["aer"]["available"]:
-        ideal_aer_distance = total_variation_distance(
-            reports[0]["aer"]["ideal"]["counts"],
-            reports[1]["aer"]["ideal"]["counts"],
-        )
-        noisy_aer_distance = total_variation_distance(
-            reports[0]["aer"]["noisy"]["counts"],
-            reports[1]["aer"]["noisy"]["counts"],
-        )
+    result = build_distributed_qft(
+        args.qubits,
+        num_nodes=args.nodes,
+        strategy=args.strategy,
+        shots=args.shots,
+    )
 
     report = {
-        "num_qubits": args.qubits,
-        "num_nodes": args.nodes,
-        "partition_strategy": args.strategy,
-        "backend_name": backend.name,
-        "chip_layout": chip_layout,
-        "reports": reports,
-        "recommended_method": best_method["method"],
-        "ideal_aer_tvd_between_methods": ideal_aer_distance,
-        "noisy_aer_tvd_between_methods": noisy_aer_distance,
+        "num_qubits": result.num_qubits,
+        "num_nodes": result.num_nodes,
+        "partition_strategy": result.strategy,
+        "backend_name": "fake_fez",
+        "chip_layout": result.chip_layout,
+        "reports": result.reports,
+        "recommended_method": result.recommended_method,
+        "ideal_aer_tvd_between_methods": result.ideal_aer_tvd_between_methods,
+        "noisy_aer_tvd_between_methods": result.noisy_aer_tvd_between_methods,
     }
 
     output_path = Path(args.output)
     if not output_path.is_absolute():
-        output_path = Path(__file__).resolve().parent / output_path
+        output_path = Path.cwd() / output_path
 
     output_path.write_text(json.dumps(report, indent=2))
 
-    print(f"Node mapping: {node_mapping}")
-    print(f"Physical mapping: {reports[0]['physical_qubit_mapping']}")
-    print(f"Using fake backend: {backend.name}")
-    print(f"Node layout: {[node['physical_qubit_range'] for node in chip_layout['nodes']]}, unused {chip_layout['unused_physical_qubit_range']}\n")
-    print_summary(reports)
-    print_aer_summaries(reports)
-    if ideal_aer_distance is not None:
-        print(f"\nIdeal Aer TVD between methods: {ideal_aer_distance:.4f}")
-        print(f"Noisy Aer TVD between methods: {noisy_aer_distance:.4f}")
-    print_nonlocal_execution_logs(reports)
+    print(f"Node mapping: {result.node_mapping}")
+    print(f"Physical mapping: {result.physical_qubit_mapping}")
+    print("Using fake backend: fake_fez")
+    print(
+        f"Node layout: {[node['physical_qubit_range'] for node in result.chip_layout['nodes']]}, "
+        f"unused {result.chip_layout['unused_physical_qubit_range']}\n"
+    )
+    print_summary(result.reports)
+    print_aer_summaries(result.reports)
+    if result.ideal_aer_tvd_between_methods is not None:
+        print(f"\nIdeal Aer TVD between methods: {result.ideal_aer_tvd_between_methods:.4f}")
+        print(f"Noisy Aer TVD between methods: {result.noisy_aer_tvd_between_methods:.4f}")
+    print_nonlocal_execution_logs(result.reports)
 
     if args.show_full_log:
-        for item in reports:
+        for item in result.reports:
             print(f"\nFull execution log for {item['method']}:")
             for entry in item["execution_log"]:
                 print(
@@ -440,7 +493,7 @@ def main() -> None:
                     f"at nodes {entry['nodes']} [{entry['locality']}] -> {entry['action']}"
                 )
 
-    print(f"\nRecommended method: {best_method['method']}")
+    print(f"\nRecommended method: {result.recommended_method}")
     print(f"Saved distributed comparison to {output_path}")
 
 

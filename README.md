@@ -49,6 +49,22 @@ standard_without_swaps = qft.qft(4, do_swap=False)
 recursive_circuit = qft.qft(4, recursive=True)
 ```
 
+The package also exposes a single dispatcher for the main build modes:
+
+```python
+standard = qft.build(kind="standard", num_qubits=4, do_swap=True, recursive=False)
+multidimensional = qft.build(kind="multidimensional", shape=(4, 2), method="recursive")
+distributed = qft.build(kind="distributed", num_qubits=4, num_nodes=2, strategy="contiguous")
+```
+
+- `kind="standard"` returns a one-dimensional QFT `QuantumCircuit`.
+- `kind="multidimensional"` returns a multidimensional QFT `QuantumCircuit`.
+- `kind="distributed"` returns a `DistributedQFTBuildResult` with:
+  - the standard and recursive circuits
+  - the chosen node mapping
+  - distributed-cost reports
+  - the recommended method under the built-in cost model
+
 ## Drawing and Intermediate States
 
 The package also provides a drawing helper that can insert barriers between logical stages and return intermediate statevectors after each stage:
@@ -85,177 +101,94 @@ for snapshot in result.intermediate_states:
     print(snapshot.statevector)
 ```
 
-## Folder Layout
+## Package Structure
 
-- `src/qft/`
-  Contains the importable Python package. The public API is exposed from `qft.__init__`, and the standard and recursive QFT builders live in `src/qft/standard_qft.py`.
+The importable package lives in `src/qft/`.
 
-- `standard_qft/`
-  Contains the standard and recursive QFT demo, notebook, and test scripts.
-
-- `distributed_qft/`
-  Contains the distributed QFT comparison script, notebook, illustrative non-local subcircuits, and generated JSON reports.
-
-- `multidimensional_qft/`
-  Contains the multidimensional QFT implementation, demo, notebook, and test.
-
-- Root `Implementation/`
-  Keeps shared utilities, metrics scripts, backend export tools, and shared JSON outputs.
-
-## Files
+- `src/qft/__init__.py`
+  Public package entry point. It exposes:
+  - `qft.qft(...)`
+  - `qft.build(...)`
+  - the main multidimensional and distributed helper functions
 
 - `src/qft/standard_qft.py`
-  Contains the core QFT implementations:
-  - standard QFT method
-  - recursive QFT
-  - direct DFT-based amplitude check
+  Core one-dimensional QFT implementations:
+  - iterative circuit construction
+  - recursive circuit construction
+  - amplitude-level reference transforms
 
-- `multidimensional_qft/multidimensional_qft.py`
-  Contains the multidimensional QFT implementation. It:
-  - validates multidimensional shapes
-  - pads non-power-of-two dimensions with zeros up to the next power of two
-  - flattens arrays into quantum-state vectors
-  - applies one QFT block per dimension
-  - computes the expected multidimensional DFT result for comparison
+- `src/qft/visualization.py`
+  Circuit drawing and QFT stage inspection:
+  - text and Matplotlib drawing
+  - optional barriers
+  - intermediate statevector snapshots
 
-- `standard_qft/forward_qft_transpile_demo.py`
-  Main demo script for the standard QFT method and recursive QFT. It:
-  - builds both circuits
-  - compares them to Qiskit's built-in QFT
-  - shows amplitudes
-  - runs Aer simulation
-  - transpiles the circuits for a fake backend
+- `src/qft/multidimensional.py`
+  Multidimensional QFT utilities:
+  - shape validation
+  - padding to powers of two
+  - multidimensional state preparation
+  - multidimensional QFT circuit construction
+  - expected classical transform for comparison
 
-- `standard_qft/standard_qft_notebook.ipynb`
-  Notebook version of the standard and recursive QFT demo with step-by-step outputs and visualizations.
+- `src/qft/distributed.py`
+  Distributed-QFT analysis utilities:
+  - node assignment
+  - logical-to-physical mapping
+  - non-local gate analysis
+  - communication-cost comparison between standard and recursive QFT
+  - `build_distributed_qft(...)` for the packaged distributed result object
 
-- `standard_qft/test_forward_qft.py`
-  Correctness test script. It checks that:
-  - the QFT circuits match Qiskit's reference implementation
-  - the output amplitudes match the expected transform
-
-- `multidimensional_qft/multidimensional_qft_demo.py`
-  Main multidimensional QFT demo. It:
-  - builds a multidimensional input array
-  - encodes it into a quantum state
-  - runs the standard and recursive multidimensional QFT circuits
-  - compares them with the expected multidimensional DFT
-  - runs ideal and noisy Aer simulations
-  - shows transpilation results
-
-- `multidimensional_qft/multidimensional_qft_notebook.ipynb`
-  Notebook version of the multidimensional QFT demo, including padded examples and visualizations.
-
-- `multidimensional_qft/test_multidimensional_qft.py`
-  Correctness test for the multidimensional QFT implementation.
-
-- `distributed_qft/distributed_qft_comparison.py`
-  Compares the standard QFT method and recursive QFT in a distributed setting. It:
-  - splits qubits across nodes
-  - identifies local and non-local gates
-  - estimates communication cost
-  - runs Aer simulations
-  - prints a recommendation
-
-- `distributed_qft/distributed_qft_blocks.py`
-  Contains explicit visualization-oriented distributed building blocks, including:
-  - cat-entangler
-  - cat-disentangler
-  - entanglement-assisted non-local controlled phase
+- `src/qft/distributed_blocks.py`
+  Visualization-oriented distributed building blocks:
+  - Bell-pair resource
+  - cat-entangler / cat-disentangler
+  - non-local controlled phase
   - teleportation leg
-  - teleportation-based distributed swap
+  - teleportation-based swap
 
-- `distributed_qft/distributed_qft_notebook.ipynb`
-  Notebook version of the distributed QFT comparison with plots, counts, and execution-log output.
+- `src/qft/sampler_utils.py`
+  Shared Aer and fake-backend sampling helpers used by the benchmarking and distributed analysis tools.
+
+## Tests
+
+The test suite now lives under `tests/`:
+
+- `tests/test_qft_package.py`
+- `tests/test_forward_qft.py`
+- `tests/test_multidimensional_qft.py`
+- `tests/test_distributed_qft.py`
+
+Run the full suite with:
+
+```bash
+python -m pytest tests
+```
+
+## Project Utilities
 
 - `qft_implementation_metrics.py`
-  Generates implementation metrics such as:
-  - build time
-  - transpilation time
-  - gate counts
-  - CNOT counts
-  - estimated backend cost
+  Records implementation metrics such as build time, transpilation time, gate counts, and estimated backend cost.
 
 - `environment_benchmark.py`
-  Saves cross-environment benchmarking reports for laptop and HPC comparison. It records:
-  - runtime
-  - peak memory use
-  - maximum problem size handled from the tested sweep
-  - stability and reproducibility across repeated seeded runs
-  - ideal-Aer and noisy-Aer measurement summaries
-
-- `qft_sampler_utils.py`
-  Shared helper functions for:
-  - building sample input states
-  - measured circuits
-  - Aer execution
-  - counts summaries
+  Runs broader benchmarking sweeps across the standard, multidimensional, and distributed implementations.
 
 - `export_backend_properties.py`
-  Exports fake backend calibration data to JSON.
-
-- `fake_manila_v2_backend_properties.json`
-  Exported backend properties for the fake Manila backend.
-
-- `distributed_qft/distributed_qft_comparison.json`
-  Example output report produced by `distributed_qft_comparison.py`.
-
-- `distributed_qft/distributed_qft_comparison_6q_3nodes.json`
-  Example distributed comparison report for a 6-qubit, 3-node case.
-
-- `qft_implementation_metrics.json`
-  Example metrics output produced by `qft_implementation_metrics.py`.
+  Exports fake backend calibration data to JSON when needed.
 
 ## Main Commands
-
-Run the QFT correctness test:
-
-```bash
-python standard_qft/test_forward_qft.py
-```
-
-Run the main QFT demo:
-
-```bash
-python standard_qft/forward_qft_transpile_demo.py
-```
-
-Run the main QFT demo with custom settings:
-
-```bash
-python standard_qft/forward_qft_transpile_demo.py --qubits 3 --shots 64 --method both
-python standard_qft/forward_qft_transpile_demo.py --qubits 4 --shots 128 --method standard
-python standard_qft/forward_qft_transpile_demo.py --qubits 4 --shots 128 --method recursive
-```
 
 Run the distributed QFT comparison:
 
 ```bash
-python distributed_qft/distributed_qft_comparison.py
+python -m qft.distributed
 ```
 
 Run the distributed comparison with custom settings:
 
 ```bash
-python distributed_qft/distributed_qft_comparison.py --qubits 6 --nodes 3 --strategy contiguous --shots 128
-python distributed_qft/distributed_qft_comparison.py --qubits 6 --nodes 3 --strategy interleaved --shots 128 --show-full-log
-```
-
-Run the multidimensional QFT demo:
-
-```bash
-python multidimensional_qft/multidimensional_qft_demo.py
-python multidimensional_qft/multidimensional_qft_demo.py --shape 4 2 --shots 128 --method both
-python multidimensional_qft/multidimensional_qft_demo.py --shape 4 2 2 --shots 128 --method both
-python multidimensional_qft/multidimensional_qft_demo.py --shape 3 2 --shots 64 --method both
-python multidimensional_qft/multidimensional_qft_demo.py --shape 9 4 --shots 128 --method both
-python multidimensional_qft/multidimensional_qft_demo.py --shape 8 8 --shots 256 --method standard
-```
-
-Run the multidimensional QFT test:
-
-```bash
-python multidimensional_qft/test_multidimensional_qft.py
+python -m qft.distributed --qubits 6 --nodes 3 --strategy contiguous --shots 128
+python -m qft.distributed --qubits 6 --nodes 3 --strategy interleaved --shots 128 --show-full-log
 ```
 
 Generate the metrics report:
@@ -282,7 +215,7 @@ python export_backend_properties.py
 
 ## Notes
 
-- `pylatexenc`, `matplotlib`, `qiskit-aer`, and `qiskit-ibm-runtime` are installed as package dependencies so the demos and notebooks can draw circuits, run Aer simulations, and use Qiskit fake backends.
+- `pylatexenc`, `matplotlib`, `qiskit-aer`, and `qiskit-ibm-runtime` are installed as package dependencies so the package utilities can draw circuits, run Aer simulations, and use Qiskit fake backends.
 
 - If a notebook still reports a missing dependency after selecting a new environment, reinstall this project into that environment:
 
