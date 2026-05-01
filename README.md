@@ -4,24 +4,26 @@ This library contains Python code for comparing the standard QFT method, the rec
 
 ## Local Environment Installation
 
-Clone the GitHub repository first:
+Clone the repository first:
 
 ```bash
 git clone https://github.com/QuantumFourier/qft.git
 cd qft
 ```
 
-Install the package in editable mode from the repository root so local changes under `src/qft/` are available immediately. In a notebook opened from the cloned repository, use:
-
-```python
-%pip install -e .
-```
-
-From a terminal opened at the repository root, the equivalent command is:
+Then install the package in editable mode from the local repository path. From a terminal, use:
 
 ```bash
-python -m pip install -e .
+python -m pip install -e /path/to/repository
 ```
+
+In a notebook, use:
+
+```python
+%pip install -e /path/to/repository
+```
+
+This makes the `qft` package importable while keeping local changes under `src/qft/` available immediately.
 
 ## Importing the QFT Library
 

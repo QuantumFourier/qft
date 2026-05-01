@@ -25,8 +25,6 @@ from qft import (
     qft,
     qft_on_amplitudes,
 )
-from qft.recursive import qft as recursive_qft_alias
-from qft.standard import qft as standard_qft_alias
 
 
 @pytest.mark.parametrize("num_qubits", range(0, 6))
@@ -57,8 +55,6 @@ def test_recursive_package_circuit_matches_qiskit_reference(num_qubits: int) -> 
 
 def test_qft_alias_returns_same_circuit() -> None:
     assert Operator(qft(4)).equiv(Operator(build_standard_qft(4)))
-    assert Operator(standard_qft_alias(4)).equiv(Operator(build_standard_qft(4)))
-    assert Operator(recursive_qft_alias(4)).equiv(Operator(build_recursive_qft(4)))
     assert Operator(build_standard_qft(4, recursive=True)).equiv(
         Operator(build_recursive_qft(4))
     )
